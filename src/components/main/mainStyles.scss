@@ -1,0 +1,21 @@
+.chat__main {
+  display: flex;
+  height: 90%;
+  border: 1px solid black;
+}
+
+.main__contacts {
+  width: 30%;
+  border: 1px solid black;
+}
+
+.main__dialog {
+  width: 70%;
+  height: 100%;
+  border: 1px solid black;
+}
+
+.main__messages {
+  height: 80%;
+  border: 1px solid black;
+}

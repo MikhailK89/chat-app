@@ -1,0 +1,40 @@
+.auth__form {
+  border: 1px solid black;
+
+  form {
+    margin: 3rem;
+  }
+}
+
+.form__login, .form__password {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .1rem;
+
+  label {
+    width: 4rem;
+    margin-right: .2rem;
+    text-align: right;
+    font-size: 0.7rem;
+  }
+
+  input {
+    width: 8rem;
+    height: 1.2rem;
+  }
+}
+
+.form__send {
+  text-align: right;
+
+  button {
+    margin: .5rem .2rem;
+    width: 4rem;
+    height: 1.5rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #434753;
+    color: #ffffff;
+  }
+}
