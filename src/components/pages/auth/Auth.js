@@ -12,7 +12,7 @@ function Auth() {
       return user.email === email && user.password === password
     })
 
-    history.push(`/user/${findUser.id}`)
+    history.push(`/users/${findUser.id}`)
   }
 
   return (

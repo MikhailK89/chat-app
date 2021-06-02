@@ -3,7 +3,8 @@ import './App.css'
 import {
   BrowserRouter as Router,
   Switch,
-  Route
+  Route,
+  Redirect
 } from 'react-router-dom'
 
 import Chat from './components/pages/chat/Chat'
@@ -19,9 +20,11 @@ export default function App() {
               <Auth />
             </Route>
 
-            <Route path="/user/:id">
+            <Route path="/users/:id">
               <Chat />
             </Route>
+
+            <Redirect from="/" to="/auth" />
           </Switch>
         </div>
       </div>

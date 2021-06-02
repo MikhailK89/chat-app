@@ -6,7 +6,7 @@
   }
 }
 
-.form__login, .form__password {
+.auth-form__login, .auth-form__password {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,7 +25,7 @@
   }
 }
 
-.form__send {
+.auth-form__send {
   text-align: right;
 
   button {

@@ -1,47 +1,57 @@
 import './mainStyles.scss'
 
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
+
 import Filter from '../filter/Filter'
 import Card from '../card/Card'
 import Message from '../message/Message'
 import Footer from '../footer/Footer'
-import messages from '../../data/messages.json'
+
+import {domain} from '../../settings/fetchSettings'
 
 function Main(props) {
-  const [selectedFriendId, setSelectedFriendId] = useState(props.friends[0].id)
   const {user, friends} = props
+
+  const [selectedFriend, setSelectedFriend] = useState(friends[0])
+  const [userMessages, setUserMessages] = useState(null)
+
+  useEffect(() => {
+    async function getUserMessages() {
+      const res = await fetch(`${domain}/messages/${user.id}`)
+      const data = await res.json()
+
+      setUserMessages(data)
+    }
+
+    getUserMessages()
+  }, [])
 
   const createCards = friends.map(friend => {
     return <Card
       friend={friend}
-      cardClickHandler={() => setSelectedFriendId(friend.id)}
+      cardClickHandler={() => setSelectedFriend(friend)}
     />
   })
 
   const createMessages = () => {
-    const userMessages = messages.find(item => item.id === user.id).messages
-
-    const userName = user.userName
-    const selectedFriendName = friends.find(friend => friend.id === selectedFriendId).userName
-
-    const findMessages = userMessages.filter(message => {
+    const selectedMessages = userMessages.filter(message => {
       if (message.from === user.id) {
-        message.author = userName
-      } else if (message.from === selectedFriendId) {
-        message.author = selectedFriendName
+        message.author = user.userName
+      } else if (message.from === selectedFriend.id) {
+        message.author = selectedFriend.userName
       }
 
-      return (message.to === user.id && message.from === selectedFriendId) ||
-        (message.to === selectedFriendId && message.from === user.id)
+      return (message.to === user.id && message.from === selectedFriend.id) ||
+        (message.to === selectedFriend.id && message.from === user.id)
     })
 
-    findMessages.sort((leftMessage, rightMessage) => {
+    selectedMessages.sort((leftMessage, rightMessage) => {
       return leftMessage.date > rightMessage.date ? 1 :
         leftMessage.date < rightMessage.date ? -1 : 0
     })
 
-    if (findMessages.length > 0) {
-      return findMessages.map(message => {
+    if (selectedMessages.length > 0) {
+      return selectedMessages.map(message => {
         return <Message message={message} />
       })
     } else {
@@ -61,7 +71,7 @@ function Main(props) {
 
       <div className="main__dialog">
         <div className="main__messages">
-          {createMessages()}
+          {userMessages && createMessages()}
         </div>
 
         <Footer />

@@ -1,12 +1,23 @@
 .contacts__card {
   display: flex;
   align-items: center;
+  margin-top: .2rem;
+  color: #f9f9f9;
   cursor: pointer;
 }
 
 .card__photo {
   width: 50px;
   height: 50px;
-  border: 1px solid black;
+  margin: 0 .2rem;
   border-radius: 50%;
+  border: 1px solid #f9f9f9;
+}
+
+.card__info {
+  font-size: .8rem;
+}
+
+.info__status {
+  font-size: .6rem;
 }

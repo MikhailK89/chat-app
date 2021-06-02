@@ -14,7 +14,7 @@ function AuthForm(props) {
   return (
     <div className="auth__form">
       <form>
-        <div className="form__login">
+        <div className="auth-form__login">
           <label>Email:</label>
           <input
             type="text"
@@ -25,7 +25,7 @@ function AuthForm(props) {
           />
         </div>
 
-        <div className="form__password">
+        <div className="auth-form__password">
           <label>Пароль:</label>
           <input
             type="text"
@@ -36,7 +36,7 @@ function AuthForm(props) {
           />
         </div>
 
-        <div className="form__send">
+        <div className="auth-form__send">
           <button
             onClick={btnHandler}
           >Отправить</button>

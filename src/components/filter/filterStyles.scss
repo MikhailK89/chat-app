@@ -1,10 +1,34 @@
 .contacts__filter {
+  display: flex;
+  align-items: center;
   width: 100%;
-  border: 1px solid black;
+  margin: 1rem 0;
+  padding-right: .2rem;
+  background-color: #696c75;
+
+  span {
+    color: #ffffff;
+  }
 }
 
 .filter__input {
   display: block;
   width: 100%;
-  height: 1rem;
+  height: 1.5rem;
+  padding: .2rem;
+  outline: none;
+  border: none;
+  background: none;
+  background-color: #696c75;
+  color: #ffffff;
+
+  &::-webkit-input-placeholder {color: #ffffff; opacity: 1;} /* webkit */
+  &::-moz-placeholder          {color: #ffffff; opacity: 1;} /* Firefox 19+ */
+  &:-moz-placeholder           {color: #ffffff; opacity: 1;} /* Firefox 18- */
+  &:-ms-input-placeholder      {color: #ffffff; opacity: 1;} /* IE */
+
+  &:focus::-webkit-input-placeholder {opacity: 0;} /* webkit */
+  &:focus::-moz-placeholder          {opacity: 0;} /* Firefox 19+ */
+  &:focus:-moz-placeholder           {opacity: 0;} /* Firefox 18- */
+  &:focus:-ms-input-placeholder      {opacity: 0;} /* IE */
 }
