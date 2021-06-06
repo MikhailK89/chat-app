@@ -2,10 +2,10 @@ import './footerStyles.scss'
 
 import MessageForm from '../message_form/MessageForm'
 
-function Footer() {
+function Footer(props) {
   return (
     <div className="footer">
-      <MessageForm />
+      <MessageForm sendMessage={props.sendMessage} />
     </div>
   )
 }

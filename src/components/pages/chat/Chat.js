@@ -2,7 +2,6 @@ import './chatStyles.scss'
 
 import {useState, useEffect} from 'react'
 import {useParams} from 'react-router-dom'
-import {connect} from 'react-redux'
 import {domain} from '../../../settings/fetchSettings'
 
 import Header from '../../header/Header'
@@ -26,8 +25,6 @@ function Chat() {
 
       const data = await res.json()
 
-      // console.log(data)
-
       setUserInfo(data)
     }
 
@@ -45,16 +42,5 @@ function Chat() {
     </div>
   )
 }
-
-// const mapStateToProps = state => {
-//   return {
-//     tokenInfo: state.authUser.tokenInfo
-//   }
-// }
-
-// export default connect(
-//   mapStateToProps,
-//   null
-// )(Chat)
 
 export default Chat

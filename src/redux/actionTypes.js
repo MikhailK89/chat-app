@@ -1,1 +1,1 @@
-export const TOKEN_INFO = 'TOKEN_INFO'
+export const SELECT_FRIEND = 'SELECT_FRIEND'

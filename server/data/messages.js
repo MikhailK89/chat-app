@@ -6,7 +6,8 @@ module.exports = [
         from: 1,
         to: 2,
         text: 'Hello world!',
-        date: 1622478439666
+        date: 1622478439666,
+        type: '__COMMON__'
       }
     ]
   }

@@ -1,39 +1,93 @@
 import './mainStyles.scss'
 
 import {useState, useEffect} from 'react'
+import {connect} from 'react-redux'
+import {selectFriend} from '../../redux/actions'
 
 import Filter from '../filter/Filter'
 import Card from '../card/Card'
 import Message from '../message/Message'
 import Footer from '../footer/Footer'
 
-import {domain} from '../../settings/fetchSettings'
+import {domain, wsDomain} from '../../settings/fetchSettings'
 
 function Main(props) {
   const {user, friends} = props
+  const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
 
-  const [selectedFriend, setSelectedFriend] = useState(friends[0])
+  const [selectedFriend, setSelectedFriend] = useState(null)
   const [userMessages, setUserMessages] = useState(null)
+  const [webSocket, setWebSocket] = useState(null)
 
-  useEffect(() => {
-    async function getUserMessages() {
-      const res = await fetch(`${domain}/messages/${user.id}`)
-      const data = await res.json()
+  const sendMessage = message => {
+    if (webSocket) {
+      webSocket.send(JSON.stringify(message))
+    }
+  }
 
-      setUserMessages(data)
+  const createWsConnection = () => {
+    const myWs = new WebSocket(`${wsDomain}/messages/live`)
+
+    myWs.onmessage = message => {
+      message = JSON.parse(message.data)
+
+      if (message.type === '__RECEIVED__') {
+        getUserMessages()
+      }
     }
 
-    getUserMessages()
+    myWs.onopen = () => {
+      console.log('Подключение установлено!')
+      myWs.send(JSON.stringify({id: user.id, type: '__INIT__'}))
+      setWebSocket(myWs)
+    }
+  }
+
+  const getUserMessages = async () => {
+    const res = await fetch(`${domain}/messages/${user.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify({token: tokenInfo.token})
+    })
+
+    const data = await res.json()
+
+    setUserMessages(data)
+  }
+
+  useEffect(() => {
+    props.selectFriend(friends[0])
+    setSelectedFriend(friends[0])
+
+    createWsConnection()
+
+    return () => {
+      if (webSocket) {
+        webSocket.send(JSON.stringify({id: user.id, type: '__CLOSE__'}))
+        webSocket.close()
+      }
+    }
   }, [])
+
+  const cardClickHandler = friend => {
+    props.selectFriend(friend)
+    setSelectedFriend(friend)
+  }
 
   const createCards = friends.map(friend => {
     return <Card
       friend={friend}
-      cardClickHandler={() => setSelectedFriend(friend)}
+      cardClickHandler={() => cardClickHandler(friend)}
     />
   })
 
   const createMessages = () => {
+    if (!selectedFriend) {
+      return <div className="message__warning">Loading...</div>
+    }
+
     const selectedMessages = userMessages.filter(message => {
       if (message.from === user.id) {
         message.author = user.userName
@@ -74,10 +128,19 @@ function Main(props) {
           {userMessages && createMessages()}
         </div>
 
-        <Footer />
+        <Footer sendMessage={sendMessage} />
       </div>
     </div>
   )
 }
 
-export default Main
+const mapDispatchToProps = dispatch => {
+  return {
+    selectFriend: friend => dispatch(selectFriend(friend))
+  }
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Main)

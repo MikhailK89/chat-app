@@ -4,27 +4,36 @@ class TokenGenerator {
   createToken(id) {
     const createdToken = {
       id,
-      token: `token:${Date.now()}`,
-      expire: '3600'
+      token: `token:${Date.now()}`
     }
 
     this.tokens[id] = createdToken
 
-    setTimeout(() => {
-      createdToken.token = null
-    }, +createdToken.expire * 1000)
-
     return createdToken
   }
 
-  tokenIsValid(id, token) {
-    if (this.tokens[id]) {
-      if (this.tokens[id].hasOwnProperty('token')) {
-        if (this.tokens[id].token === token) {
-          return true
-        }
+  findToken(id) {
+    try {
+      if (this.tokens[id]) {
+        return this.tokens[id]
       }
+    } catch (e) {}
+
+    return null
+  }
+
+  deleteToken(id) {
+    if (this.tokens.hasOwnProperty(id)) {
+      this.tokens[id] = null
     }
+  }
+
+  tokenIsValid(id, token) {
+    try {
+      if (this.tokens[id].token === token) {
+        return true
+      }
+    } catch (e) {}
 
     return false
   }

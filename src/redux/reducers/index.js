@@ -1,4 +1,4 @@
 import {combineReducers} from 'redux'
-import authUser from './authUser'
+import chatPageState from './chatPageState'
 
-export default combineReducers({authUser})
+export default combineReducers({chatPageState})

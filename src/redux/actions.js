@@ -1,8 +1,8 @@
-import {TOKEN_INFO} from './actionTypes'
+import {SELECT_FRIEND} from './actionTypes'
 
-export const saveTokenInfo = tokenInfo => {
+export const selectFriend = friend => {
   return {
-    type: TOKEN_INFO,
-    payload: tokenInfo
+    type: SELECT_FRIEND,
+    payload: friend
   }
 }
