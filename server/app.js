@@ -73,9 +73,6 @@ app.get('/messages/live', (req, res) => {
             clients[message.id.toString()] = client
             client.send(JSON.stringify({type: '__RECEIVED__'}))
             break
-          case '__CLOSE__':
-            delete clients[message.id.toString()]
-            break
           case '__COMMON__':
             const messageFromItem = messages.find(item => item.id === message.from)
             const messageToItem = messages.find(item => item.id === message.to)
@@ -106,6 +103,14 @@ app.get('/messages/live', (req, res) => {
 
             break
         }
+      })
+
+      client.on('close', () => {
+        Object.keys(clients).forEach(id => {
+          if (clients[id] === client) {
+            delete clients[id]
+          }
+        })
       })
     }
   }

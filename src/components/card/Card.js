@@ -9,7 +9,7 @@ function Card(props) {
 
       <div className="card__info">
         <div className="info__name">{friend.userName}</div>
-        <div className="info__status">online</div>
+        <div className="info__status">онлайн</div>
       </div>
     </div>
   )

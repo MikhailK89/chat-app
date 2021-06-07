@@ -1,0 +1,11 @@
+.header__app-settings {
+  display: flex;
+  align-items: center;
+  
+  span {
+    margin-left: .5rem;
+    font-size: 2rem;
+    color: #434753;
+    cursor: pointer;
+  }
+}

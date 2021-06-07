@@ -1,35 +1,35 @@
 module.exports = [
   {
     id: 1,
-    userName: 'Randy Marsh',
+    userName: 'Рэнди Марш',
     friendsIds: [2, 3, 4, 5],
     email: 'randy_marsh@gmail.com',
     password: '12345'
   },
   {
     id: 2,
-    userName: 'Stan Marsh',
+    userName: 'Стэн Марш',
     friendsIds: [1, 3, 4, 5],
     email: 'stan_marsh@gmail.com',
     password: '12345'
   },
   {
     id: 3,
-    userName: 'Eric Cartman',
+    userName: 'Эрик Картман',
     friendsIds: [1, 2, 4, 5],
     email: 'eric_cartman@gmail.com',
     password: '12345'
   },
   {
     id: 4,
-    userName: 'Kyle Broflovski',
+    userName: 'Кайл Брофловски',
     friendsIds: [1, 2, 3, 5],
     email: 'kyle_broflovski@gmail.com',
     password: '12345'
   },
   {
     id: 5,
-    userName: 'Kenny McCormick',
+    userName: 'Кенни Маккормик',
     friendsIds: [1, 2, 3, 4],
     email: 'kenny_mccormick@gmail.com',
     password: '12345'

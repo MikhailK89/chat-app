@@ -15,9 +15,10 @@ function Main(props) {
   const {user, friends} = props
   const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
 
-  const [selectedFriend, setSelectedFriend] = useState(null)
   const [userMessages, setUserMessages] = useState(null)
   const [webSocket, setWebSocket] = useState(null)
+
+  const selectedFriend = props.selectedFriend
 
   const sendMessage = message => {
     if (webSocket) {
@@ -37,7 +38,6 @@ function Main(props) {
     }
 
     myWs.onopen = () => {
-      console.log('Подключение установлено!')
       myWs.send(JSON.stringify({id: user.id, type: '__INIT__'}))
       setWebSocket(myWs)
     }
@@ -59,13 +59,11 @@ function Main(props) {
 
   useEffect(() => {
     props.selectFriend(friends[0])
-    setSelectedFriend(friends[0])
 
     createWsConnection()
 
     return () => {
       if (webSocket) {
-        webSocket.send(JSON.stringify({id: user.id, type: '__CLOSE__'}))
         webSocket.close()
       }
     }
@@ -73,7 +71,6 @@ function Main(props) {
 
   const cardClickHandler = friend => {
     props.selectFriend(friend)
-    setSelectedFriend(friend)
   }
 
   const createCards = friends.map(friend => {
@@ -85,12 +82,12 @@ function Main(props) {
 
   const createMessages = () => {
     if (!selectedFriend) {
-      return <div className="message__warning">Loading...</div>
+      return <div className="message__warning">Подождите...</div>
     }
 
     const selectedMessages = userMessages.filter(message => {
       if (message.from === user.id) {
-        message.author = user.userName
+        message.author = 'Вы'
       } else if (message.from === selectedFriend.id) {
         message.author = selectedFriend.userName
       }
@@ -109,7 +106,7 @@ function Main(props) {
         return <Message message={message} />
       })
     } else {
-      return <div className="message__warning">No messages yet...</div>
+      return <div className="message__warning">Пока нет сообщений...</div>
     }
   }
 
@@ -134,6 +131,12 @@ function Main(props) {
   )
 }
 
+const mapStateToProps = state => {
+  return {
+    selectedFriend: state.chatPageState.selectedFriend
+  }
+}
+
 const mapDispatchToProps = dispatch => {
   return {
     selectFriend: friend => dispatch(selectFriend(friend))
@@ -141,6 +144,6 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(Main)

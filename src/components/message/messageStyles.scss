@@ -1,4 +1,39 @@
 .main__message {
   margin: .5rem;
-  border: 1px solid black;
+  padding: .2rem;
+  border-radius: 5px;
+
+  &.message__user {
+    margin-right: 1.2rem;
+    border: 1px solid rgba(27, 131, 242, .3);
+  }
+
+  &.message__friend {
+    margin-left: 1.2rem;
+    border: 1px solid rgba(46, 139, 87, .3);
+  }
+}
+
+.message__author {
+  font-size: .8rem;
+  font-weight: bold;
+
+  &.message__user {
+    color: #1b83f2;
+  }
+
+  &.message__friend {
+    color: #2E8B57;
+  }
+}
+
+.message__text {
+  margin: .2rem 0;
+}
+
+.message__date {
+  text-align: right;
+  font-weight: bold;
+  font-size: .5rem;
+  color: #808080;
 }
