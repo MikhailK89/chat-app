@@ -10,8 +10,6 @@ function MessageForm(props) {
   const [messageText, setMessageText] = useState('')
 
   const handleSending = e => {
-    e.preventDefault()
-
     const message = {
       from: userId,
       to: props.selectedFriend.id,
@@ -20,8 +18,25 @@ function MessageForm(props) {
       type: '__COMMON__'
     }
 
-    props.sendMessage(message)
-    setMessageText('')
+    if (e.type === 'click') {
+      e.preventDefault()
+      props.sendMessage(message)
+      setMessageText('')
+    }
+
+    if (e.type === 'keydown') {
+      if (e.code === 'Enter') {
+        e.preventDefault()
+      }
+    }
+
+    if (e.type === 'keyup') {
+      if (e.code === 'Enter') {
+        e.preventDefault()
+        props.sendMessage(message)
+        setMessageText('')
+      }
+    }
   }
 
   return (
@@ -29,6 +44,8 @@ function MessageForm(props) {
       <textarea
         className="message-form__text"
         onChange={e => setMessageText(e.target.value)}
+        onKeyDown={handleSending}
+        onKeyUp={handleSending}
         value={messageText}
         placeholder="Текст вашего сообщения"
       ></textarea>

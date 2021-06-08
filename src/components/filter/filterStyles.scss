@@ -1,9 +1,14 @@
 .contacts__filter {
   display: flex;
   align-items: center;
+  height: 3rem;
+}
+
+.filter__search-line {
+  display: flex;
+  align-items: center;
   width: 100%;
-  margin: 1rem 0;
-  padding-right: .2rem;
+  padding-right: .5rem;
   background-color: #696c75;
 
   span {
@@ -21,6 +26,7 @@
   background: none;
   background-color: #696c75;
   color: #f9f9f9;
+  font-size: .6rem;
 
   &::-webkit-input-placeholder {color: #f9f9f9; opacity: 1;} /* Webkit */
   &::-moz-placeholder          {color: #f9f9f9; opacity: 1;} /* Firefox 19+ */

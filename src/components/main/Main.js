@@ -1,6 +1,6 @@
 import './mainStyles.scss'
 
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import {connect} from 'react-redux'
 import {selectFriend} from '../../redux/actions'
 
@@ -15,6 +15,8 @@ function Main(props) {
   const {user, friends} = props
   const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
 
+  const messagesCont = useRef(null)
+
   const [userMessages, setUserMessages] = useState(null)
   const [webSocket, setWebSocket] = useState(null)
 
@@ -24,6 +26,11 @@ function Main(props) {
     if (webSocket) {
       webSocket.send(JSON.stringify(message))
     }
+  }
+
+  const scrollDownMessages = () => {
+    const contElem = messagesCont.current
+    contElem.scrollTop = contElem.scrollHeight - contElem.clientHeight
   }
 
   const createWsConnection = () => {
@@ -55,6 +62,7 @@ function Main(props) {
     const data = await res.json()
 
     setUserMessages(data)
+    scrollDownMessages()
   }
 
   useEffect(() => {
@@ -74,10 +82,28 @@ function Main(props) {
   }
 
   const createCards = friends.map(friend => {
-    return <Card
-      friend={friend}
-      cardClickHandler={() => cardClickHandler(friend)}
-    />
+    const filterText = props.filterContactsText.toLowerCase()
+    const userName = friend.userName.toLowerCase()
+
+    const regexp = /(\S+)\s+(\S+)/
+    const userNameArr = userName.match(regexp)
+
+    const filterCond = userNameArr[1].startsWith(filterText) ||
+      userNameArr[2].startsWith(filterText)
+
+    if (filterText === '') {
+      return <Card
+        friend={friend}
+        cardClickHandler={() => cardClickHandler(friend)}
+      />
+    } else if (filterText !== '' && filterCond) {
+      return <Card
+        friend={friend}
+        cardClickHandler={() => cardClickHandler(friend)}
+      />
+    } else {
+      return null
+    }
   })
 
   const createMessages = () => {
@@ -121,11 +147,13 @@ function Main(props) {
       </div>
 
       <div className="main__dialog">
-        <div className="main__messages">
+        <div className="main__messages" ref={messagesCont}>
           {userMessages && createMessages()}
         </div>
 
-        <Footer sendMessage={sendMessage} />
+        <Footer
+          sendMessage={sendMessage}
+        />
       </div>
     </div>
   )
@@ -133,7 +161,8 @@ function Main(props) {
 
 const mapStateToProps = state => {
   return {
-    selectedFriend: state.chatPageState.selectedFriend
+    selectedFriend: state.chatPageState.selectedFriend,
+    filterContactsText: state.chatPageState.filterContactsText
   }
 }
 

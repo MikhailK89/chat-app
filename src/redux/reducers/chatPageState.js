@@ -1,7 +1,8 @@
-import {SELECT_FRIEND} from '../actionTypes'
+import {SELECT_FRIEND, FILTER_CONTACTS} from '../actionTypes'
 
 const initialState = {
-  selectedFriend: null
+  selectedFriend: null,
+  filterContactsText: ''
 }
 
 export default function chatPageState(state = initialState, action) {
@@ -10,6 +11,11 @@ export default function chatPageState(state = initialState, action) {
       return {
         ...state,
         selectedFriend: {...action.payload}
+      }
+    case FILTER_CONTACTS:
+      return {
+        ...state,
+        filterContactsText: action.payload
       }
     default:
       return {
