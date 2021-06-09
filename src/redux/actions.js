@@ -1,4 +1,4 @@
-import {SELECT_FRIEND, FILTER_CONTACTS} from './actionTypes'
+import {SELECT_FRIEND, FILTER_CONTACTS, TOGGLE_MENU} from './actionTypes'
 
 export const selectFriend = friend => {
   return {
@@ -11,5 +11,12 @@ export const filterContacts = text => {
   return {
     type: FILTER_CONTACTS,
     payload: text
+  }
+}
+
+export const toggleMenu = isActivated => {
+  return {
+    type: TOGGLE_MENU,
+    payload: isActivated
   }
 }

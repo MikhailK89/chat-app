@@ -1,8 +1,9 @@
-import {SELECT_FRIEND, FILTER_CONTACTS} from '../actionTypes'
+import {SELECT_FRIEND, FILTER_CONTACTS, TOGGLE_MENU} from '../actionTypes'
 
 const initialState = {
   selectedFriend: null,
-  filterContactsText: ''
+  filterContactsText: '',
+  menuIsActivated: false
 }
 
 export default function chatPageState(state = initialState, action) {
@@ -16,6 +17,11 @@ export default function chatPageState(state = initialState, action) {
       return {
         ...state,
         filterContactsText: action.payload
+      }
+    case TOGGLE_MENU:
+      return {
+        ...state,
+        menuIsActivated: action.payload
       }
     default:
       return {

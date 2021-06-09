@@ -1,11 +1,17 @@
 .header__app-settings {
   display: flex;
   align-items: center;
-  
-  span {
-    margin-left: 1rem;
-    font-size: 2rem;
-    color: #434753;
-    cursor: pointer;
-  }
+}
+
+.app-settings__icon {
+  margin-left: 1rem;
+  font-size: 2rem;
+  color: #434753;
+  cursor: pointer;
+
+  transition: color .2s linear;
+}
+
+.app-settings__icon-active {
+  color: #1b83f2;
 }
