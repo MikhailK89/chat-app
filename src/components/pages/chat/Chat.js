@@ -6,6 +6,7 @@ import {domain} from '../../../settings/fetchSettings'
 
 import Header from '../../header/Header'
 import Main from '../../main/Main'
+import FindFriends from '../../modals/findFriends/FindFriends'
 
 function Chat() {
   const userId = +useParams().id
@@ -35,6 +36,7 @@ function Chat() {
     <div className="chat">
       {userInfo && (
         <>
+          <FindFriends />
           <Header user={userInfo.findUser} />
           <Main user={userInfo.findUser} friends={userInfo.findFriends} />
         </>

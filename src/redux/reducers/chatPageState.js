@@ -1,9 +1,10 @@
-import {SELECT_FRIEND, FILTER_CONTACTS, TOGGLE_MENU} from '../actionTypes'
+import {SELECT_FRIEND, FILTER_CONTACTS, TOGGLE_MENU, FRIENDS_MODAL} from '../actionTypes'
 
 const initialState = {
   selectedFriend: null,
   filterContactsText: '',
-  menuIsActivated: false
+  menuIsActivated: false,
+  friendsModalIsOpened: false
 }
 
 export default function chatPageState(state = initialState, action) {
@@ -22,6 +23,11 @@ export default function chatPageState(state = initialState, action) {
       return {
         ...state,
         menuIsActivated: action.payload
+      }
+    case FRIENDS_MODAL:
+      return {
+        ...state,
+        friendsModalIsOpened: action.payload
       }
     default:
       return {

@@ -33,5 +33,12 @@ module.exports = [
     friendsIds: [1, 2, 3, 4],
     email: 'kenny_mccormick@gmail.com',
     password: '12345'
+  },
+  {
+    id: 6,
+    userName: 'Леопольд Стотч',
+    friendsIds: [],
+    email: 'leopold_stotch@gmail.com',
+    password: '12345'
   }
 ]

@@ -1,0 +1,34 @@
+.find-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 .5rem;
+}
+
+.find-card__info {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.find-card__photo {
+  width: 40px;
+  height: 40px;
+  margin-right: .2rem;
+  border: 1px solid rgba(105, 108, 117, .6);
+  border-radius: 50%;
+}
+
+.find-card__name {
+  font-size: .8rem;
+}
+
+.find-card__add {
+  border: none;
+  outline: none;
+  padding: .2rem .5rem;
+  background-color: #2E8B57;
+  border-radius: 5px;
+  color: #f9f9f9;
+  cursor: pointer;
+}

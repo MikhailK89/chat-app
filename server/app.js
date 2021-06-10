@@ -118,4 +118,25 @@ app.get('/messages/live', (req, res) => {
   myWs.handleUpgrade(req, req.socket, Buffer.alloc(0), handleClients)
 })
 
+app.post('/friends', (req, res) => {
+  const filterText = req.body.filterText.toLowerCase()
+  const currentUserId = req.body.id
+  const currentUser = users.find(user => user.id === currentUserId)
+  const currentFriendsIds = currentUser.friendsIds
+
+  const friendsList = users.filter(user => {
+    const userName = user.userName.toLowerCase()
+
+    const regexp = /(\S+)\s+(\S+)/
+    const userNameArr = userName.match(regexp)
+
+    const filterCond = !currentFriendsIds.includes(user.id) &&
+      (userNameArr[1].startsWith(filterText) || userNameArr[2].startsWith(filterText))
+
+    return filterCond
+  })
+
+  res.json(friendsList)
+})
+
 app.listen(4200)
