@@ -1,7 +1,11 @@
 import './findCard.scss'
 
+import {useState} from 'react'
+
 function FindCard(props) {
   const {findFriend} = props
+
+  const [btnState, setBtnState] = useState('add')
 
   return (
     <div className="find-card">

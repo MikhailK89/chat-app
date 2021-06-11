@@ -7,6 +7,7 @@
   padding: .5rem;
   background-color: #ffffff;
   border: 1px solid rgba(105, 108, 117, .1);
+  transition: visibility .2s linear, opacity .2s linear;
 }
 
 .menu__info {
