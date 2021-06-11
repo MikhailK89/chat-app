@@ -139,4 +139,26 @@ app.post('/friends', (req, res) => {
   res.json(friendsList)
 })
 
+app.post('/friends/add', (req, res) => {
+  const {userId, friendId} = req.body
+  const user = users.find(user => user.id === userId)
+
+  if (!user.friendsIds.includes(friendId)) {
+    user.friendsIds.push(friendId)
+  }
+
+  res.json({message: 'Добавлен новый контакт'})
+})
+
+app.delete('/friends/delete', (req, res) => {
+  const {userId, friendId} = req.body
+  const user = users.find(user => user.id === userId)
+
+  if (user.friendsIds.includes(friendId)) {
+    user.friendsIds = user.friendsIds.filter(id => id !== friendId)
+  }
+
+  res.json({message: 'Данный контакт удалён'})
+})
+
 app.listen(4200)

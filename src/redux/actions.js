@@ -1,29 +1,36 @@
-import {SELECT_FRIEND, FILTER_CONTACTS, TOGGLE_MENU, FRIENDS_MODAL} from './actionTypes'
+import * as actionTypes from './actionTypes'
 
 export const selectFriend = friend => {
   return {
-    type: SELECT_FRIEND,
+    type: actionTypes.SELECT_FRIEND,
     payload: friend
   }
 }
 
 export const filterContacts = text => {
   return {
-    type: FILTER_CONTACTS,
+    type: actionTypes.FILTER_CONTACTS,
     payload: text
   }
 }
 
 export const toggleMenu = isActivated => {
   return {
-    type: TOGGLE_MENU,
+    type: actionTypes.TOGGLE_MENU,
     payload: isActivated
   }
 }
 
 export const openFriendsModal = isOpened => {
   return {
-    type: FRIENDS_MODAL,
+    type: actionTypes.FRIENDS_MODAL,
     payload: isOpened
+  }
+}
+
+export const updateFriendsList = operation => {
+  return {
+    type: actionTypes.FRIENDS_UPDATE,
+    payload: operation
   }
 }

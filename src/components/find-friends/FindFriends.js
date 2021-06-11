@@ -1,51 +1,37 @@
-import './findFriendsStyles.scss'
+import './findFriends.scss'
 
 import {useState} from 'react'
-import {useParams} from 'react-router-dom'
 import {connect} from 'react-redux'
-import {openFriendsModal} from '../../../redux/actions'
-import {domain} from '../../../settings/fetchSettings'
+import {openFriendsModal} from '../../redux/actions'
 
-import FindCard from '../../find-card/FindCard'
+import FindCard from '../find-card/FindCard'
 
 function FindFriends(props) {
   const {friendsModalIsOpened} = props
-
-  const [filterText, setFilterText] = useState('')
-  const [friendsList, setFriendsList] = useState([])
-
-  const id = +useParams().id
+  const {friendsList, clearFriendsList, handleSearch, title} = props
 
   const addClasses = friendsModalIsOpened ? '' : ' window__closed'
 
-  const handleSending = async (e) => {
-    if (filterText === '') {
-      return
-    }
+  const [filterText, setFilterText] = useState('')
 
+  const handleSending = e => {
     if (e.type === 'keyup') {
       if (e.code !== 'Enter') {
         return
       }
     }
 
-    const res = await fetch(`${domain}/friends`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify({id, filterText})
-    })
+    if (filterText === '') {
+      return
+    }
 
-    const data = await res.json()
-
-    setFriendsList(data)
+    handleSearch({filterText})
   }
 
   const closeFriendsModal = () => {
     props.openFriendsModal(false)
     setFilterText('')
-    setFriendsList([])
+    clearFriendsList()
   }
 
   const createFriendsList = () => {
@@ -66,7 +52,7 @@ function FindFriends(props) {
       >close</span>
 
       <div className="find-friends__header">
-        <div className="find-friends__title">Найти друзей</div>
+        <div className="find-friends__title">{title}</div>
         <div className="find-friends__filter">
           <input
             type="text"

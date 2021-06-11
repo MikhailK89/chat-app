@@ -23,12 +23,19 @@
   font-size: .8rem;
 }
 
-.find-card__add {
+.find-card__btn {
   border: none;
   outline: none;
   padding: .2rem .5rem;
-  background-color: #2E8B57;
   border-radius: 5px;
   color: #f9f9f9;
   cursor: pointer;
+}
+
+.find-card__add {
+  background-color: #2E8B57;
+}
+
+.find-card__delete {
+  background-color: #B22222;
 }
