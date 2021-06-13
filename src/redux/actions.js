@@ -34,3 +34,17 @@ export const updateFriendsList = operation => {
     payload: operation
   }
 }
+
+export const openContactsAdd = isOpened => {
+  return {
+    type: actionTypes.CONTACTS_ADD,
+    payload: isOpened
+  }
+}
+
+export const openContactsDelete = isOpened => {
+  return {
+    type: actionTypes.CONTACTS_DELETE,
+    payload: isOpened
+  }
+}

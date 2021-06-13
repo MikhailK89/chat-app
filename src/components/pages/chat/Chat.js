@@ -4,30 +4,24 @@ import {useState, useEffect} from 'react'
 import {useParams} from 'react-router-dom'
 import {connect} from 'react-redux'
 
-import {domain} from '../../../settings/fetchSettings'
+import dbManager from '../../../services/databaseManager'
 
 import Header from '../../header/Header'
 import Main from '../../main/Main'
-import FriendsSearch from '../../modals/friends_search/FriendsSearch'
+import ContactsAdd from '../../modals/contacts_add/ContactsAdd'
+import ContactsDelete from '../../modals/contacts_delete/ContactsDelete'
 
 function Chat(props) {
   const userId = +useParams().id
   const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
 
+  const {contactsAddModal, contactsDeleteModal} = props
+
   const [userInfo, setUserInfo] = useState(null)
 
   const getUserInfo = async () => {
-    const res = await fetch(`${domain}/users/${userId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify({token: tokenInfo.token})
-    })
-
-    const data = await res.json()
-
-    setUserInfo(data)
+    const dataReceive = await dbManager.getUserInfo({userId, tokenInfo})
+    setUserInfo(dataReceive)
   }
 
   useEffect(() => {
@@ -38,7 +32,8 @@ function Chat(props) {
     <div className="chat">
       {userInfo && (
         <>
-          <FriendsSearch />
+          {contactsAddModal && <ContactsAdd />}
+          {contactsDeleteModal && <ContactsDelete />}
           <Header user={userInfo.findUser} />
           <Main user={userInfo.findUser} friends={userInfo.findFriends} />
         </>
@@ -49,7 +44,9 @@ function Chat(props) {
 
 const mapStateToProps = state => {
   return {
-    friendsListOperation: state.chatPageState.friendsListOperation
+    friendsListOperation: state.chatPageState.friendsListOperation,
+    contactsAddModal: state.chatPageState.contactsAddModal,
+    contactsDeleteModal: state.chatPageState.contactsDeleteModal
   }
 }
 

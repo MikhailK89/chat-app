@@ -5,7 +5,9 @@ const initialState = {
   filterContactsText: '',
   menuIsActivated: false,
   friendsModalIsOpened: false,
-  friendsListOperation: ''
+  friendsListOperation: '',
+  contactsAddModal: false,
+  contactsDeleteModal: false
 }
 
 export default function chatPageState(state = initialState, action) {
@@ -34,6 +36,16 @@ export default function chatPageState(state = initialState, action) {
       return {
         ...state,
         friendsListOperation: action.payload
+      }
+    case actionTypes.CONTACTS_ADD:
+      return {
+        ...state,
+        contactsAddModal: action.payload
+      }
+    case actionTypes.CONTACTS_DELETE:
+      return {
+        ...state,
+        contactsDeleteModal: action.payload
       }
     default:
       return {

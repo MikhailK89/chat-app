@@ -2,13 +2,15 @@ import './findFriends.scss'
 
 import {useState} from 'react'
 import {connect} from 'react-redux'
-import {openFriendsModal} from '../../redux/actions'
+import * as actions from '../../redux/actions'
+
+import btnManager from '../../services/btnStateManager'
 
 import FindCard from '../find-card/FindCard'
 
 function FindFriends(props) {
   const {friendsModalIsOpened} = props
-  const {friendsList, clearFriendsList, handleSearch, title} = props
+  const {title, friendsList, handleSearch, closeModal, btnType} = props
 
   const addClasses = friendsModalIsOpened ? '' : ' window__closed'
 
@@ -21,23 +23,26 @@ function FindFriends(props) {
       }
     }
 
-    if (filterText === '') {
-      return
-    }
-
     handleSearch({filterText})
   }
 
   const closeFriendsModal = () => {
     props.openFriendsModal(false)
+    props.openContactsAdd(false)
+    props.openContactsDelete(false)
+    btnManager.clearBtnTypes()
     setFilterText('')
-    clearFriendsList()
+    closeModal()
   }
 
   const createFriendsList = () => {
     if (friendsList.length > 0) {
       return friendsList.map(findFriend => (
-        <FindCard findFriend={findFriend} />
+        <FindCard
+          key={findFriend.id}
+          findFriend={findFriend}
+          btnType={btnType}
+        />
       ))
     } else {
       return <div className="find-friends__warning">Пока не найдены...</div>
@@ -85,7 +90,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    openFriendsModal: isOpened => dispatch(openFriendsModal(isOpened))
+    openFriendsModal: isOpened => dispatch(actions.openFriendsModal(isOpened)),
+    openContactsAdd: isOpened => dispatch(actions.openContactsAdd(isOpened)),
+    openContactsDelete: isOpened => dispatch(actions.openContactsDelete(isOpened))
   }
 }
 

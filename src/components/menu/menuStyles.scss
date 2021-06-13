@@ -4,7 +4,7 @@
   top: calc(100%);
   width: calc(30%);
   height: 400px;
-  padding: .5rem;
+  padding: .5rem 1rem;
   background-color: #ffffff;
   border: 1px solid rgba(105, 108, 117, .1);
   transition: visibility .2s linear, opacity .2s linear;
@@ -36,7 +36,7 @@
 }
 
 .menu__options-icon {
-  margin-right: .2rem;
+  margin-right: .5rem;
   color: #696c75;
 }
 

@@ -1,16 +1,23 @@
 import './menuStyles.scss'
 
 import {connect} from 'react-redux'
-import {openFriendsModal, toggleMenu} from '../../redux/actions'
+import * as actions from '../../redux/actions'
 
 function Menu(props) {
   const {user, menuIsActivated} = props
 
   const addClasses = menuIsActivated ? '' : ' window__closed'
 
-  const startFriendsSearch = () => {
+  const addContacts = () => {
     props.toggleMenu(false)
     props.openFriendsModal(true)
+    props.openContactsAdd(true)
+  }
+
+  const deleteContacts = () => {
+    props.toggleMenu(false)
+    props.openFriendsModal(true)
+    props.openContactsDelete(true)
   }
 
   return (
@@ -25,8 +32,16 @@ function Menu(props) {
           <span className="menu__options-icon material-icons">search</span>
           <span
             className="menu__options-title"
-            onClick={startFriendsSearch}
-          >Найти друзей</span>
+            onClick={addContacts}
+          >Добавить контакты</span>
+        </div>
+
+        <div className="menu__options-flex">
+          <span className="menu__options-icon material-icons">person_remove</span>
+          <span
+            className="menu__options-title"
+            onClick={deleteContacts}
+          >Удалить контакты</span>
         </div>
 
         <div className="menu__options-flex">
@@ -46,8 +61,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    openFriendsModal: isOpened => dispatch(openFriendsModal(isOpened)),
-    toggleMenu: isActivated => dispatch(toggleMenu(isActivated))
+    toggleMenu: isActivated => dispatch(actions.toggleMenu(isActivated)),
+    openFriendsModal: isOpened => dispatch(actions.openFriendsModal(isOpened)),
+    openContactsAdd: isOpened => dispatch(actions.openContactsAdd(isOpened)),
+    openContactsDelete: isOpened => dispatch(actions.openContactsDelete(isOpened))
   }
 }
 

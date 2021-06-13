@@ -45,7 +45,7 @@ app.post('/users/:id', (req, res) => {
 
     res.json({findUser, findFriends})
   } else {
-    res.status(404).send('Try auth again')
+    res.status(404).send('Произошла ошибка. Попробуйте войти в систему заново')
   }
 })
 
@@ -58,7 +58,7 @@ app.post('/messages/:id', (req, res) => {
 
     res.json(findMessages)
   } else {
-    res.status(404).send('Try auth again')
+    res.status(404).send('Произошла ошибка. Попробуйте войти в систему заново')
   }
 })
 
@@ -121,44 +121,61 @@ app.get('/messages/live', (req, res) => {
 app.post('/friends', (req, res) => {
   const filterText = req.body.filterText.toLowerCase()
   const currentUserId = req.body.id
-  const currentUser = users.find(user => user.id === currentUserId)
-  const currentFriendsIds = currentUser.friendsIds
+  const token = req.body.tokenInfo.token
 
-  const friendsList = users.filter(user => {
-    const userName = user.userName.toLowerCase()
+  if (tokenGenerator.tokenIsValid(currentUserId, token)) {
+    const currentUser = users.find(user => user.id === currentUserId)
+    const currentFriendsIds = currentUser.friendsIds
 
-    const regexp = /(\S+)\s+(\S+)/
-    const userNameArr = userName.match(regexp)
+    const friendsList = users.filter(user => {
+      const userName = user.userName.toLowerCase()
+      const regexp = /(\S+)\s+(\S+)/
+      const userNameArr = userName.match(regexp)
 
-    const filterCond = !currentFriendsIds.includes(user.id) &&
-      (userNameArr[1].startsWith(filterText) || userNameArr[2].startsWith(filterText))
+      const filterCond = !currentFriendsIds.includes(user.id) &&
+        (userNameArr[1].startsWith(filterText) || userNameArr[2].startsWith(filterText))
 
-    return filterCond
-  })
+      return filterCond
+    })
 
-  res.json(friendsList)
+    res.json(friendsList)
+  } else {
+    res.status(404).send('Произошла ошибка. Попробуйте войти в систему заново')
+  }
 })
 
 app.post('/friends/add', (req, res) => {
   const {userId, friendId} = req.body
-  const user = users.find(user => user.id === userId)
+  const token = req.body.tokenInfo.token
 
-  if (!user.friendsIds.includes(friendId)) {
-    user.friendsIds.push(friendId)
+  if (tokenGenerator.tokenIsValid(userId, token)) {
+    const user = users.find(user => user.id === userId)
+
+    if (!user.friendsIds.includes(friendId)) {
+      user.friendsIds.push(friendId)
+    }
+
+    res.json({message: 'Добавлен новый контакт'})
+  } else {
+    res.status(404).send('Произошла ошибка. Попробуйте войти в систему заново')
   }
-
-  res.json({message: 'Добавлен новый контакт'})
 })
 
 app.delete('/friends/delete', (req, res) => {
   const {userId, friendId} = req.body
-  const user = users.find(user => user.id === userId)
+  const token = req.body.tokenInfo.token
 
-  if (user.friendsIds.includes(friendId)) {
-    user.friendsIds = user.friendsIds.filter(id => id !== friendId)
+  if (tokenGenerator.tokenIsValid(userId, token)) {
+    const user = users.find(user => user.id === userId)
+
+    if (user.friendsIds.includes(friendId)) {
+      user.friendsIds = user.friendsIds.filter(id => id !== friendId)
+    }
+
+    res.json({message: 'Данный контакт удалён'})
+  } else {
+    res.status(404).send('Произошла ошибка. Попробуйте войти в систему заново')
   }
-
-  res.json({message: 'Данный контакт удалён'})
 })
 
 app.listen(4200)

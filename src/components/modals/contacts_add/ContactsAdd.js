@@ -5,19 +5,25 @@ import dbManager from '../../../services/databaseManager'
 
 import FindFriends from '../../find-friends/FindFriends'
 
-function FriendsSearch() {
+function ContactsAdd() {
   const id = +useParams().id
+  const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
 
   const [friendsList, setFriendsList] = useState([])
 
-  const title = 'Найти друзей'
+  const title = 'Добавить контакты'
+  const btnType = 'add'
 
   const handleSearch = async ({filterText}) => {
-    const dataReceive = await dbManager.getFriendsList({id, filterText})
+    if (filterText === '') {
+      return
+    }
+
+    const dataReceive = await dbManager.getFriendsList({id, tokenInfo, filterText})
     setFriendsList(dataReceive)
   }
 
-  const clearFriendsList = () => {
+  const closeModal = () => {
     setFriendsList([])
   }
 
@@ -25,10 +31,11 @@ function FriendsSearch() {
     <FindFriends
       title={title}
       friendsList={friendsList}
-      clearFriendsList={clearFriendsList}
       handleSearch={handleSearch}
+      closeModal={closeModal}
+      btnType={btnType}
     />
   )
 }
 
-export default FriendsSearch
+export default ContactsAdd

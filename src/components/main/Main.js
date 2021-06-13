@@ -3,13 +3,15 @@ import './mainStyles.scss'
 import {useState, useEffect, useRef} from 'react'
 import {connect} from 'react-redux'
 import {selectFriend} from '../../redux/actions'
+import {wsDomain} from '../../settings/fetchSettings'
+import {filterByName, filterAndSortMessages} from '../../shared/helperFuncs'
+
+import dbManager from '../../services/databaseManager'
 
 import Filter from '../filter/Filter'
 import Card from '../card/Card'
 import Message from '../message/Message'
 import Footer from '../footer/Footer'
-
-import {domain, wsDomain} from '../../settings/fetchSettings'
 
 function Main(props) {
   const {user, friends} = props
@@ -51,17 +53,9 @@ function Main(props) {
   }
 
   const getUserMessages = async () => {
-    const res = await fetch(`${domain}/messages/${user.id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify({token: tokenInfo.token})
-    })
+    const dataReceive = await dbManager.getUserMessages({userId: user.id, tokenInfo})
 
-    const data = await res.json()
-
-    setUserMessages(data)
+    setUserMessages(dataReceive)
     scrollDownMessages()
   }
 
@@ -81,51 +75,23 @@ function Main(props) {
     props.selectFriend(friend)
   }
 
-  const createCards = friends.map(friend => {
-    const filterText = props.filterContactsText.toLowerCase()
-    const userName = friend.userName.toLowerCase()
+  const createCards = () => {
+    const filterText = props.filterContactsText
 
-    const regexp = /(\S+)\s+(\S+)/
-    const userNameArr = userName.match(regexp)
-
-    const filterCond = userNameArr[1].startsWith(filterText) ||
-      userNameArr[2].startsWith(filterText)
-
-    if (filterText === '') {
+    return filterByName(friends, filterText).map(friend => {
       return <Card
         friend={friend}
         cardClickHandler={() => cardClickHandler(friend)}
       />
-    } else if (filterText !== '' && filterCond) {
-      return <Card
-        friend={friend}
-        cardClickHandler={() => cardClickHandler(friend)}
-      />
-    } else {
-      return null
-    }
-  })
+    })
+  }
 
   const createMessages = () => {
     if (!selectedFriend) {
       return <div className="message__warning">Подождите...</div>
     }
 
-    const selectedMessages = userMessages.filter(message => {
-      if (message.from === user.id) {
-        message.author = 'Вы'
-      } else if (message.from === selectedFriend.id) {
-        message.author = selectedFriend.userName
-      }
-
-      return (message.to === user.id && message.from === selectedFriend.id) ||
-        (message.to === selectedFriend.id && message.from === user.id)
-    })
-
-    selectedMessages.sort((leftMessage, rightMessage) => {
-      return leftMessage.date > rightMessage.date ? 1 :
-        leftMessage.date < rightMessage.date ? -1 : 0
-    })
+    const selectedMessages = filterAndSortMessages(userMessages, user, selectedFriend)
 
     if (selectedMessages.length > 0) {
       return selectedMessages.map(message => {
@@ -142,7 +108,7 @@ function Main(props) {
         <Filter />
 
         <div className="main__cards">
-          {createCards}
+          {createCards()}
         </div>
       </div>
 

@@ -6,26 +6,38 @@ import {connect} from 'react-redux'
 import {updateFriendsList} from '../../redux/actions'
 
 import dbManager from '../../services/databaseManager'
+import btnManager from '../../services/btnStateManager'
 
 function FindCard(props) {
-  const {findFriend} = props
+  const {findFriend, btnType} = props
 
   const userId = +useParams().id
   const friendId = findFriend.id
+  const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
 
-  const [btnState, setBtnState] = useState('add')
+  const [btnState, setBtnState] = useState(btnType)
+
+  const savedBtnState = btnManager.getBtnType(friendId)
+
+  if (savedBtnState) {
+    if (savedBtnState !== btnState) {
+      setBtnState(savedBtnState)
+    }
+  }
 
   const addClasses = btnState === 'add' ? ' find-card__add' : ' find-card__delete'
 
   const btnHandler = async () => {
     if (btnState === 'add') {
-      const dataReceive = await dbManager.addFriend({userId, friendId})
+      const dataReceive = await dbManager.addFriend({userId, friendId, tokenInfo})
+      btnManager.saveBtnType(friendId, 'delete')
       setBtnState('delete')
-      props.updateFriendsList('add')
+      props.updateFriendsList(`add:${Date.now()}`)
     } else {
-      const dataReceive = await dbManager.deleteFriend({userId, friendId})
+      const dataReceive = await dbManager.deleteFriend({userId, friendId, tokenInfo})
+      btnManager.saveBtnType(friendId, 'add')
       setBtnState('add')
-      props.updateFriendsList('delete')
+      props.updateFriendsList(`delete:${Date.now()}`)
     }
   }
 
