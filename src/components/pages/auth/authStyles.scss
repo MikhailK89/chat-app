@@ -5,3 +5,22 @@
   width: 100%;
   height: 100%;
 }
+
+.auth-info {
+  border-radius: 5px;
+  border: 1px solid rgba(27, 131, 242, .3);
+}
+
+.auth-info__title {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1b83f2;
+}
+
+.auth-info__register {
+  margin-bottom: .5rem;
+  text-align: center;
+  font-size: .6rem;
+}

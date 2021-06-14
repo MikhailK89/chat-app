@@ -1,6 +1,20 @@
 import {domain} from '../settings/fetchSettings'
 
 class DatabaseManager {
+  async authUser(formData) {
+    const res = await fetch(`${domain}/auth`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(formData)
+    })
+
+    const tokenInfo = await res.json()
+
+    return tokenInfo
+  }
+
   async getFriendsList(dataSend) {
     const res = await fetch(`${domain}/friends`, {
       method: 'POST',
