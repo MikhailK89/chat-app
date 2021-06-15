@@ -15,6 +15,20 @@ class DatabaseManager {
     return tokenInfo
   }
 
+  async registerUser(formData) {
+    const res = await fetch(`${domain}/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(formData)
+    })
+
+    const data = await res.json()
+
+    return data
+  }
+
   async getFriendsList(dataSend) {
     const res = await fetch(`${domain}/friends`, {
       method: 'POST',

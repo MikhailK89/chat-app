@@ -12,27 +12,30 @@ import store from './redux/store'
 
 import Chat from './components/pages/chat/Chat'
 import Auth from './components/pages/auth/Auth'
+import Register from './components/pages/register/Register'
 
 export default function App() {
   return (
     <Router>
       <div className="app">
         <div className="container">
-          <Switch>
-            <Route path="/auth">
-              <Provider store={store}>
+          <Provider store={store}>
+            <Switch>
+              <Route path="/auth">
                 <Auth />
-              </Provider>
-            </Route>
+              </Route>
 
-            <Route path="/users/:id">
-              <Provider store={store}>
+              <Route path="/register">
+                <Register />
+              </Route>
+
+              <Route path="/users/:id">
                 <Chat />
-              </Provider>
-            </Route>
+              </Route>
 
-            <Redirect from="/" to="/auth" />
-          </Switch>
+              <Redirect from="/" to="/auth" />
+            </Switch>
+          </Provider>
         </div>
       </div>
     </Router>

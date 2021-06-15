@@ -1,15 +1,21 @@
 import './authStyles.scss'
 
+import {useState} from 'react'
 import {Link, useHistory} from 'react-router-dom'
 import dbManager from '../../../services/databaseManager'
 
-import AuthForm from '../../auth_form/AuthForm'
+import SendForm from '../../send_form/SendForm'
 
 function Auth() {
   const history = useHistory()
 
+  const [btnState, setBtnState] = useState(false)
+  const [inputNameState, setInputNameState] = useState(false)
+
   const sendFormHandler = async (formData) => {
+    setBtnState(true)
     const tokenInfo = await dbManager.authUser(formData)
+    setBtnState(false)
 
     if (tokenInfo) {
       localStorage.setItem('tokenInfo', JSON.stringify(tokenInfo))
@@ -22,8 +28,10 @@ function Auth() {
       <div className="auth-info">
         <div className="auth-info__title">Войти в чат</div>
 
-        <AuthForm
+        <SendForm
           sendFormHandler={sendFormHandler}
+          btnState={btnState}
+          inputNameState={inputNameState}
         />
 
         <div className="auth-info__register">

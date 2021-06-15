@@ -78,8 +78,13 @@ function Main(props) {
   const createCards = () => {
     const filterText = props.filterContactsText
 
+    if (friends.length === 0) {
+      return null
+    }
+
     return filterByName(friends, filterText).map(friend => {
       return <Card
+        key={friend.id}
         friend={friend}
         cardClickHandler={() => cardClickHandler(friend)}
       />
@@ -87,6 +92,10 @@ function Main(props) {
   }
 
   const createMessages = () => {
+    if (friends.length === 0) {
+      return <div className="message__warning">Добавьте новые контакты...</div>
+    }
+
     if (!selectedFriend) {
       return <div className="message__warning">Подождите...</div>
     }
@@ -95,7 +104,7 @@ function Main(props) {
 
     if (selectedMessages.length > 0) {
       return selectedMessages.map(message => {
-        return <Message message={message} />
+        return <Message key={message.date} message={message} />
       })
     } else {
       return <div className="message__warning">Пока нет сообщений...</div>

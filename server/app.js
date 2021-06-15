@@ -15,6 +15,8 @@ const users = require('./data/users')
 const messages = require('./data/messages')
 const tokenGenerator = require('./tokenGenerator')
 
+let maxId = users.reduce((max, cur) => cur.id > max ? cur.id : max, 0)
+
 app.post('/auth', (req, res) => {
   const {email, password} = req.body
 
@@ -29,6 +31,35 @@ app.post('/auth', (req, res) => {
     res.json(tokenInfo)
   } else {
     res.json(null)
+  }
+})
+
+app.post('/register', (req, res) => {
+  const {name, email, password} = req.body
+
+  const findUser = users.find(user => {
+    return user.email === email
+  })
+
+  if (findUser) {
+    res.json({message: 'Пользователь с таким email уже есть'})
+  } else {
+    const genId = ++maxId
+
+    users.push({
+      id: genId,
+      userName: name,
+      friendsIds: [],
+      email,
+      password
+    })
+
+    messages.push({
+      id: genId,
+      messages: []
+    })
+
+    res.json({message: 'Регистрация прошла успешно!'})
   }
 })
 

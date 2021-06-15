@@ -1,23 +1,47 @@
-import './authFormStyles.scss'
+import './sendFormStyles.scss'
 
 import {useState} from 'react'
 import {useForm} from 'react-hook-form'
 
-function AuthForm(props) {
+function SendForm(props) {
+  const {sendFormHandler, btnState, inputNameState} = props
+
+  const [name, setName] = useState('Рэнди Марш')
   const [email, setEmail] = useState('randy_marsh@gmail.com')
   const [password, setPassword] = useState('12345')
 
   const {register, handleSubmit, formState: {errors}} = useForm()
 
+  const addClasses = inputNameState ? '' : ' hide'
+
   const onSubmit = data => {
-    const {email, password} = data
-    props.sendFormHandler({email, password})
+    const {name, email, password} = data
+    sendFormHandler({name, email, password})
   }
 
   return (
-    <div className="auth__form">
+    <div className="send__form">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="auth-form__login">
+        <div className={"send-form__name" + addClasses}>
+          <label htmlFor="inputName">Имя:</label>
+          <input
+            id="inputName"
+            type="text"
+            {...register('name', {
+              required: 'Поле не должно быть пустым',
+              pattern: {
+                value: /\S+\s+\S+/,
+                message: 'Образец имени: Иван Иванов'
+              }
+            })}
+            autoComplete="off"
+            onChange={e => setName(e.target.value)}
+            value={name}
+          />
+        </div>
+        <div className="send-form__error">{errors.name?.message}</div>
+
+        <div className="send-form__login">
           <label htmlFor="inputEmail">Email:</label>
           <input
             id="inputEmail"
@@ -34,9 +58,9 @@ function AuthForm(props) {
             value={email}
           />
         </div>
-        <div className="auth-form__error">{errors.email?.message}</div>
+        <div className="send-form__error">{errors.email?.message}</div>
 
-        <div className="auth-form__password">
+        <div className="send-form__password">
           <label htmlFor="inputPassword">Пароль:</label>
           <input
             id="inputPassword"
@@ -54,14 +78,17 @@ function AuthForm(props) {
             value={password}
           />
         </div>
-        <div className="auth-form__error">{errors.password?.message}</div>
+        <div className="send-form__error">{errors.password?.message}</div>
 
-        <div className="auth-form__send">
-          <button type="submit">Отправить</button>
+        <div className="send-form__send">
+          <button
+            type="submit"
+            disabled={btnState}
+          >Отправить</button>
         </div>
       </form>
     </div>
   )
 }
 
-export default AuthForm
+export default SendForm

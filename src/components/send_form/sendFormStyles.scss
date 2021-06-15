@@ -1,12 +1,12 @@
-.auth__form {
+.send__form {
   form {
     margin: 1.5rem 3rem 1.5rem 3rem;
   }
 }
 
-.auth-form__login, .auth-form__password {
+.send-form__name, .send-form__login, .send-form__password {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-bottom: .2rem;
 
@@ -25,7 +25,7 @@
   }
 }
 
-.auth-form__send {
+.send-form__send {
   text-align: right;
 
   button {
@@ -39,7 +39,7 @@
   }
 }
 
-.auth-form__error {
+.send-form__error {
   margin-bottom: .2rem;
   padding-right: .2rem;
   font-size: .5rem;
