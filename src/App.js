@@ -13,6 +13,7 @@ import store from './redux/store'
 import Chat from './components/pages/chat/Chat'
 import Auth from './components/pages/auth/Auth'
 import Register from './components/pages/register/Register'
+import Alert from './components/alert/Alert'
 
 export default function App() {
   return (
@@ -20,6 +21,8 @@ export default function App() {
       <div className="app">
         <div className="container">
           <Provider store={store}>
+            <Alert />
+
             <Switch>
               <Route path="/auth">
                 <Auth />

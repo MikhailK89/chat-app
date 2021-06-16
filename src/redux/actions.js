@@ -31,7 +31,7 @@ export const openFriendsModal = isOpened => {
 export const updateFriendsList = operation => {
   return {
     type: actionTypes.FRIENDS_UPDATE,
-    payload: operation
+    payload: {operation}
   }
 }
 
@@ -46,5 +46,12 @@ export const openContactsDelete = isOpened => {
   return {
     type: actionTypes.CONTACTS_DELETE,
     payload: isOpened
+  }
+}
+
+export const showAlertMessage = messageInfo => {
+  return {
+    type: actionTypes.ALERT_MESSAGE,
+    payload: messageInfo
   }
 }

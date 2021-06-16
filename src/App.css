@@ -4,6 +4,7 @@
 }
 
 .container {
+  position: relative;
   width: 1200px;
   height: 100vh;
   border-radius: 2px;

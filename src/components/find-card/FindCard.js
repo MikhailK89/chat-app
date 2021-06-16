@@ -32,12 +32,12 @@ function FindCard(props) {
       const dataReceive = await dbManager.addFriend({userId, friendId, tokenInfo})
       btnManager.saveBtnType(friendId, 'delete')
       setBtnState('delete')
-      props.updateFriendsList(`add:${Date.now()}`)
+      props.updateFriendsList('add')
     } else {
       const dataReceive = await dbManager.deleteFriend({userId, friendId, tokenInfo})
       btnManager.saveBtnType(friendId, 'add')
       setBtnState('add')
-      props.updateFriendsList(`delete:${Date.now()}`)
+      props.updateFriendsList('delete')
     }
   }
 

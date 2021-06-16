@@ -2,12 +2,16 @@ import './registerStyles.scss'
 
 import {useState} from 'react'
 import {Link, useHistory} from 'react-router-dom'
+import {connect} from 'react-redux'
+import {showAlertMessage} from '../../../redux/actions'
 import dbManager from '../../../services/databaseManager'
 
 import SendForm from '../../send_form/SendForm'
 
-function Register() {
+function Register(props) {
   const history = useHistory()
+
+  const {activateAlertMessage} = props
 
   const [btnState, setBtnState] = useState(false)
   const [inputNameState, setInputNameState] = useState(true)
@@ -21,6 +25,13 @@ function Register() {
       email: email.trim(),
       password: password.trim()
     })
+
+    activateAlertMessage({
+      type: 'error',
+      text: dataReceive.message,
+      duration: 4000
+    })
+
     setBtnState(false)
   }
 
@@ -43,4 +54,13 @@ function Register() {
   )
 }
 
-export default Register
+const mapDispatchToProps = dispatch => {
+  return {
+    activateAlertMessage: messageInfo => dispatch(showAlertMessage(messageInfo))
+  }
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(Register)
