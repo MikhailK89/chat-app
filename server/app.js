@@ -2,211 +2,112 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 
+const fbManager = require('./database/firebaseManager')
+
 const WebSocket = require('ws')
 const myWs = new WebSocket.Server({noServer: true})
 const clients = {}
-let handleClients = null
+const createHandleClients = require('./services/handleClients')
+const handleClients = createHandleClients(clients, fbManager)
 
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-const users = require('./data/users')
-const messages = require('./data/messages')
-const tokenGenerator = require('./tokenGenerator')
-
-let maxId = users.reduce((max, cur) => cur.id > max ? cur.id : max, 0)
-
-app.post('/auth', (req, res) => {
+app.post('/auth', async (req, res) => {
   const {email, password} = req.body
 
-  const findUser = users.find(user => {
-    return user.email === email && user.password === password
-  })
-
-  if (findUser) {
-    const findToken = tokenGenerator.findToken(findUser.id)
-    const tokenInfo = findToken || tokenGenerator.createToken(findUser.id)
-
-    res.json(tokenInfo)
-  } else {
-    res.json(null)
-  }
+  const fbRes = await fbManager.authUser({email, password})
+  res.json(fbRes)
 })
 
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
   const {name, email, password} = req.body
 
-  const findUser = users.find(user => {
-    return user.email === email
-  })
+  const regRes = await fbManager.registerUser({email, password})
 
-  if (findUser) {
-    res.json({message: 'Пользователь с таким email уже есть'})
-  } else {
-    const genId = ++maxId
-
-    users.push({
-      id: genId,
+  if (!regRes.hasOwnProperty('error')) {
+    const userId = regRes.localId
+    const addUserRes = await fbManager.addUser(userId, {
+      id: userId,
       userName: name,
-      friendsIds: [],
+      profileImage: '',
+      friendsIds: [''],
       email,
       password
     })
-
-    messages.push({
-      id: genId,
-      messages: []
-    })
-
-    res.json({message: 'Регистрация прошла успешно!'})
   }
+
+  res.json(regRes)
 })
 
-app.post('/users/:id', (req, res) => {
-  const id = +req.params.id
-  const token = req.body.token
+app.post('/user/info', async (req, res) => {
+  const {userId} = req.body
 
-  if (tokenGenerator.tokenIsValid(id, token)) {
-    const findUser = users.find(user => user.id === id)
+  const userData = await fbManager.getUser(userId)
+  const friendsData = []
+  const friendsIds = userData.friendsIds
 
-    const findFriends = findUser.friendsIds.map(id => {
-      return users.find(user => user.id === id)
-    })
-
-    res.json({findUser, findFriends})
-  } else {
-    res.status(404).send('Произошла ошибка. Попробуйте войти в систему заново')
-  }
-})
-
-app.post('/messages/:id', (req, res) => {
-  const id = +req.params.id
-  const token = req.body.token
-
-  if (tokenGenerator.tokenIsValid(id, token)) {
-    const findMessages = messages.find(item => item.id === id).messages
-
-    res.json(findMessages)
-  } else {
-    res.status(404).send('Произошла ошибка. Попробуйте войти в систему заново')
-  }
-})
-
-app.get('/messages/live', (req, res) => {
-  if (!handleClients) {
-    handleClients = client => {
-      client.on('message', message => {
-        message = JSON.parse(message)
-
-        switch (message.type) {
-          case '__INIT__':
-            clients[message.id.toString()] = client
-            client.send(JSON.stringify({type: '__RECEIVED__'}))
-            break
-          case '__COMMON__':
-            const messageFromItem = messages.find(item => item.id === message.from)
-            const messageToItem = messages.find(item => item.id === message.to)
-
-            if (messageFromItem) {
-              messageFromItem.messages.push({...message})
-            } else {
-              messages.push({
-                id: message.from,
-                messages: [{...message}]
-              })
-            }
-
-            if (messageToItem) {
-              messageToItem.messages.push({...message})
-            } else {
-              messages.push({
-                id: message.to,
-                messages: [{...message}]
-              })
-            }
-
-            Object.keys(clients).forEach(id => {
-              if (id === message.from.toString() || id === message.to.toString()) {
-                clients[id].send(JSON.stringify({type: '__RECEIVED__'}))
-              }
-            })
-
-            break
-        }
-      })
-
-      client.on('close', () => {
-        Object.keys(clients).forEach(id => {
-          if (clients[id] === client) {
-            delete clients[id]
-          }
-        })
-      })
+  for (let i = 0; i < friendsIds.length; i++) {
+    if (friendsIds[i] !== '') {
+      const friendData = await fbManager.getUser(friendsIds[i])
+      friendsData.push(friendData)
     }
   }
 
+  res.json({userData, friendsData})
+})
+
+app.post('/user/messages', async (req, res) => {
+  const {userId} = req.body
+
+  const fbRes = await fbManager.getUserMessages(userId)
+  let userMessages = []
+
+  if (fbRes) {
+    userMessages = Object.keys(fbRes).map(messageId => fbRes[messageId])
+  }
+
+  res.json(userMessages)
+})
+
+app.get('/messages', (req, res) => {
   myWs.handleUpgrade(req, req.socket, Buffer.alloc(0), handleClients)
 })
 
-app.post('/friends', (req, res) => {
+app.post('/friends/search', async (req, res) => {
+  const {userId} = req.body
   const filterText = req.body.filterText.toLowerCase()
-  const currentUserId = req.body.id
-  const token = req.body.tokenInfo.token
 
-  if (tokenGenerator.tokenIsValid(currentUserId, token)) {
-    const currentUser = users.find(user => user.id === currentUserId)
-    const currentFriendsIds = currentUser.friendsIds
+  const userData = await fbManager.getUser(userId)
+  const friendsIds = userData.friendsIds
 
-    const friendsList = users.filter(user => {
-      const userName = user.userName.toLowerCase()
-      const regexp = /(\S+)\s+(\S+)/
-      const userNameArr = userName.match(regexp)
+  const fbUsers = await fbManager.getUsers()
+  const usersData = Object.keys(fbUsers).map(id => fbUsers[id])
 
-      const filterCond = !currentFriendsIds.includes(user.id) &&
-        (userNameArr[1].startsWith(filterText) || userNameArr[2].startsWith(filterText))
+  const friendsList = usersData.filter(user => {
+    const regexp = /(\S+)\s+(\S+)/
+    const userNameArr = user.userName.toLowerCase().match(regexp)
 
-      return filterCond
-    })
+    const filterCond = !friendsIds.includes(user.id) &&
+      (userNameArr[1].startsWith(filterText) || userNameArr[2].startsWith(filterText))
 
-    res.json(friendsList)
-  } else {
-    res.status(404).send('Произошла ошибка. Попробуйте войти в систему заново')
-  }
+    return filterCond
+  })
+
+  res.json(friendsList)
 })
 
-app.post('/friends/add', (req, res) => {
+app.post('/friends/add', async (req, res) => {
   const {userId, friendId} = req.body
-  const token = req.body.tokenInfo.token
-
-  if (tokenGenerator.tokenIsValid(userId, token)) {
-    const user = users.find(user => user.id === userId)
-
-    if (!user.friendsIds.includes(friendId)) {
-      user.friendsIds.push(friendId)
-    }
-
-    res.json({message: 'Добавлен новый контакт'})
-  } else {
-    res.status(404).send('Произошла ошибка. Попробуйте войти в систему заново')
-  }
+  const fbRes = await fbManager.addFriendId(userId, friendId)
+  res.json(fbRes)
 })
 
-app.delete('/friends/delete', (req, res) => {
+app.delete('/friends/delete', async (req, res) => {
   const {userId, friendId} = req.body
-  const token = req.body.tokenInfo.token
-
-  if (tokenGenerator.tokenIsValid(userId, token)) {
-    const user = users.find(user => user.id === userId)
-
-    if (user.friendsIds.includes(friendId)) {
-      user.friendsIds = user.friendsIds.filter(id => id !== friendId)
-    }
-
-    res.json({message: 'Данный контакт удалён'})
-  } else {
-    res.status(404).send('Произошла ошибка. Попробуйте войти в систему заново')
-  }
+  const fbRes = await fbManager.deleteFriendId(userId, friendId)
+  res.json(fbRes)
 })
 
 app.listen(4200)

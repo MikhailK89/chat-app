@@ -1,7 +1,6 @@
 import './findCard.scss'
 
 import {useState} from 'react'
-import {useParams} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {updateFriendsList} from '../../redux/actions'
 
@@ -11,9 +10,9 @@ import btnManager from '../../services/btnStateManager'
 function FindCard(props) {
   const {findFriend, btnType} = props
 
-  const userId = +useParams().id
-  const friendId = findFriend.id
   const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
+  const userId = tokenInfo.localId
+  const friendId = findFriend.id
 
   const [btnState, setBtnState] = useState(btnType)
 
@@ -29,12 +28,12 @@ function FindCard(props) {
 
   const btnHandler = async () => {
     if (btnState === 'add') {
-      const dataReceive = await dbManager.addFriend({userId, friendId, tokenInfo})
+      const dataReceive = await dbManager.addFriend({userId, friendId})
       btnManager.saveBtnType(friendId, 'delete')
       setBtnState('delete')
       props.updateFriendsList('add')
     } else {
-      const dataReceive = await dbManager.deleteFriend({userId, friendId, tokenInfo})
+      const dataReceive = await dbManager.deleteFriend({userId, friendId})
       btnManager.saveBtnType(friendId, 'add')
       setBtnState('add')
       props.updateFriendsList('delete')

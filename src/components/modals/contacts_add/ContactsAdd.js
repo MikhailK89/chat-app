@@ -1,13 +1,11 @@
 import {useState} from 'react'
-import {useParams} from 'react-router-dom'
-
 import dbManager from '../../../services/databaseManager'
 
 import FindFriends from '../../find-friends/FindFriends'
 
 function ContactsAdd() {
-  const id = +useParams().id
   const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
+  const userId = tokenInfo.localId
 
   const [friendsList, setFriendsList] = useState([])
 
@@ -19,7 +17,7 @@ function ContactsAdd() {
       return
     }
 
-    const dataReceive = await dbManager.getFriendsList({id, tokenInfo, filterText})
+    const dataReceive = await dbManager.getFriendsList({userId, filterText})
     setFriendsList(dataReceive)
   }
 

@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react'
-import {useParams} from 'react-router-dom'
 import {connect} from 'react-redux'
 
 import {filterByName} from '../../../shared/helperFuncs'
@@ -8,8 +7,8 @@ import dbManager from '../../../services/databaseManager'
 import FindFriends from '../../find-friends/FindFriends'
 
 function ContactsDelete(props) {
-  const userId = +useParams().id
   const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
+  const userId = tokenInfo.localId
 
   const [friendsList, setFriendsList] = useState([])
   const [savedFriendsList, setSavedFriendsList] = useState([])
@@ -22,8 +21,8 @@ function ContactsDelete(props) {
   }
 
   const getFriendsList = async ({filterText}) => {
-    const dataReceive = await dbManager.getUserInfo({userId, tokenInfo})
-    const friendsData = filterByName(dataReceive.findFriends, filterText)
+    const dataReceive = await dbManager.getUserInfo({userId})
+    const friendsData = filterByName(dataReceive.friendsData, filterText)
     setFriendsList([...friendsData])
     setSavedFriendsList([...friendsData])
   }

@@ -30,7 +30,7 @@ class DatabaseManager {
   }
 
   async getFriendsList(dataSend) {
-    const res = await fetch(`${domain}/friends`, {
+    const res = await fetch(`${domain}/friends/search`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8'
@@ -72,14 +72,12 @@ class DatabaseManager {
   }
 
   async getUserInfo(dataSend) {
-    const {userId, tokenInfo} = dataSend
-
-    const res = await fetch(`${domain}/users/${userId}`, {
+    const res = await fetch(`${domain}/user/info`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8'
       },
-      body: JSON.stringify({token: tokenInfo.token})
+      body: JSON.stringify(dataSend)
     })
 
     const dataReceive = await res.json()
@@ -88,14 +86,12 @@ class DatabaseManager {
   }
 
   async getUserMessages(dataSend) {
-    const {userId, tokenInfo} = dataSend
-
-    const res = await fetch(`${domain}/messages/${userId}`, {
+    const res = await fetch(`${domain}/user/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8'
       },
-      body: JSON.stringify({token: tokenInfo.token})
+      body: JSON.stringify(dataSend)
     })
 
     const dataReceive = await res.json()

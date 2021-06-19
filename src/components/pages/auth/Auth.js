@@ -10,7 +10,7 @@ function Auth() {
   const history = useHistory()
 
   const [btnState, setBtnState] = useState(false)
-  const [inputNameState, setInputNameState] = useState(false)
+  const inputNameState = false
 
   const sendFormHandler = async (formData) => {
     setBtnState(true)
@@ -19,7 +19,7 @@ function Auth() {
 
     if (tokenInfo) {
       localStorage.setItem('tokenInfo', JSON.stringify(tokenInfo))
-      history.push(`/users/${tokenInfo.id}`)
+      history.push('/chat')
     }
   }
 

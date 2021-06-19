@@ -14,7 +14,7 @@ function Register(props) {
   const {activateAlertMessage} = props
 
   const [btnState, setBtnState] = useState(false)
-  const [inputNameState, setInputNameState] = useState(true)
+  const inputNameState = true
 
   const sendFormHandler = async (formData) => {
     const {name, email, password} = formData
@@ -26,13 +26,13 @@ function Register(props) {
       password: password.trim()
     })
 
+    setBtnState(false)
+
     activateAlertMessage({
-      type: 'error',
-      text: dataReceive.message,
+      type: 'success',
+      text: 'Регистрация прошла успешно',
       duration: 4000
     })
-
-    setBtnState(false)
   }
 
   return (

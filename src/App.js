@@ -32,7 +32,7 @@ export default function App() {
                 <Register />
               </Route>
 
-              <Route path="/users/:id">
+              <Route path="/chat">
                 <Chat />
               </Route>
 

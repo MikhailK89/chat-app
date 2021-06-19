@@ -15,7 +15,6 @@ import Footer from '../footer/Footer'
 
 function Main(props) {
   const {user, friends} = props
-  const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
 
   const messagesCont = useRef(null)
 
@@ -36,7 +35,7 @@ function Main(props) {
   }
 
   const createWsConnection = () => {
-    const myWs = new WebSocket(`${wsDomain}/messages/live`)
+    const myWs = new WebSocket(`${wsDomain}/messages`)
 
     myWs.onmessage = message => {
       message = JSON.parse(message.data)
@@ -47,13 +46,13 @@ function Main(props) {
     }
 
     myWs.onopen = () => {
-      myWs.send(JSON.stringify({id: user.id, type: '__INIT__'}))
+      myWs.send(JSON.stringify({userId: user.id, type: '__INIT__'}))
       setWebSocket(myWs)
     }
   }
 
   const getUserMessages = async () => {
-    const dataReceive = await dbManager.getUserMessages({userId: user.id, tokenInfo})
+    const dataReceive = await dbManager.getUserMessages({userId: user.id})
 
     setUserMessages(dataReceive)
     scrollDownMessages()

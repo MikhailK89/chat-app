@@ -9,7 +9,7 @@ function Header(props) {
     <div className="chat__header">
       <Menu user={props.user} />
       <AppSettings />
-      <UserInfo user={props.user} />
+      <UserInfo />
     </div>
   )
 }

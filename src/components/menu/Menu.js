@@ -6,7 +6,7 @@ import * as actions from '../../redux/actions'
 function Menu(props) {
   const {user, menuIsActivated} = props
 
-  const addClasses = menuIsActivated ? '' : ' window__closed'
+  const addClasses = menuIsActivated ? '' : ' hide'
 
   const addContacts = () => {
     props.toggleMenu(false)

@@ -1,7 +1,6 @@
 import './chatStyles.scss'
 
 import {useState, useEffect} from 'react'
-import {useParams} from 'react-router-dom'
 import {connect} from 'react-redux'
 
 import dbManager from '../../../services/databaseManager'
@@ -12,15 +11,14 @@ import ContactsAdd from '../../modals/contacts_add/ContactsAdd'
 import ContactsDelete from '../../modals/contacts_delete/ContactsDelete'
 
 function Chat(props) {
-  const userId = +useParams().id
-  const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
-
   const {contactsAddModal, contactsDeleteModal} = props
+  const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
+  const userId = tokenInfo.localId
 
   const [userInfo, setUserInfo] = useState(null)
 
   const getUserInfo = async () => {
-    const dataReceive = await dbManager.getUserInfo({userId, tokenInfo})
+    const dataReceive = await dbManager.getUserInfo({userId})
     setUserInfo(dataReceive)
   }
 
@@ -30,12 +28,12 @@ function Chat(props) {
 
   return (
     <div className="chat">
-      {userInfo && (
+      {tokenInfo && userInfo && (
         <>
           {contactsAddModal && <ContactsAdd />}
           {contactsDeleteModal && <ContactsDelete />}
-          <Header user={userInfo.findUser} />
-          <Main user={userInfo.findUser} friends={userInfo.findFriends} />
+          <Header user={userInfo.userData} />
+          <Main user={userInfo.userData} friends={userInfo.friendsData} />
         </>
       )}
     </div>

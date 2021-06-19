@@ -2,10 +2,10 @@ import './messageFormStyles.scss'
 
 import {useState} from 'react'
 import {connect} from 'react-redux'
-import {useParams} from 'react-router-dom'
 
 function MessageForm(props) {
-  const userId = +useParams().id
+  const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
+  const userId = tokenInfo.localId
 
   const [messageText, setMessageText] = useState('')
 

@@ -12,7 +12,7 @@ function FindFriends(props) {
   const {friendsModalIsOpened} = props
   const {title, friendsList, handleSearch, closeModal, btnType} = props
 
-  const addClasses = friendsModalIsOpened ? '' : ' window__closed'
+  const addClasses = friendsModalIsOpened ? '' : ' hide'
 
   const [filterText, setFilterText] = useState('')
 

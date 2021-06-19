@@ -8,11 +8,11 @@ function SendForm(props) {
 
   const [name, setName] = useState('Рэнди Марш')
   const [email, setEmail] = useState('randy_marsh@gmail.com')
-  const [password, setPassword] = useState('12345')
+  const [password, setPassword] = useState('123456789')
 
   const {register, handleSubmit, formState: {errors}} = useForm()
 
-  const addClasses = inputNameState ? '' : ' hide'
+  const addClasses = inputNameState ? '' : ' delete'
 
   const onSubmit = data => {
     const {name, email, password} = data

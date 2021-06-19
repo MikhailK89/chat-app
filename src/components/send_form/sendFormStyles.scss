@@ -23,6 +23,10 @@
     padding: .2rem;
     border: 1px solid rgba(67, 71, 83, .3);
   }
+
+  &.delete {
+    display: none;
+  }
 }
 
 .send-form__send {
@@ -36,6 +40,10 @@
     border-radius: 5px;
     background-color: #1b83f2;
     color: #ffffff;
+
+    &:disabled {
+      background-color: #c0c0c0;
+    }
   }
 }
 
