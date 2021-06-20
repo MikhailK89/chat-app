@@ -2,7 +2,7 @@ import './mainStyles.scss'
 
 import {useState, useEffect, useRef} from 'react'
 import {connect} from 'react-redux'
-import {selectFriend} from '../../redux/actions'
+import {selectFriend, updateFriendsList} from '../../redux/actions'
 import {wsDomain} from '../../settings/fetchSettings'
 import {filterByName, filterAndSortMessages} from '../../shared/helperFuncs'
 
@@ -21,17 +21,17 @@ function Main(props) {
   const [userMessages, setUserMessages] = useState(null)
   const [webSocket, setWebSocket] = useState(null)
 
-  const selectedFriend = props.selectedFriend
+  const {selectedFriend, friendsListOperation} = props
+
+  const scrollDownMessages = () => {
+    const contElem = messagesCont.current
+    contElem.scrollTop = contElem.scrollHeight - contElem.clientHeight
+  }
 
   const sendMessage = message => {
     if (webSocket) {
       webSocket.send(JSON.stringify(message))
     }
-  }
-
-  const scrollDownMessages = () => {
-    const contElem = messagesCont.current
-    contElem.scrollTop = contElem.scrollHeight - contElem.clientHeight
   }
 
   const createWsConnection = () => {
@@ -42,6 +42,12 @@ function Main(props) {
 
       if (message.type === '__RECEIVED__') {
         getUserMessages()
+      }
+
+      if (message.type === '__UPDATE__') {
+        if (message.operation.status === 'get') {
+          props.updateFriendsList(message.operation)
+        }
       }
     }
 
@@ -55,12 +61,19 @@ function Main(props) {
     const dataReceive = await dbManager.getUserMessages({userId: user.id})
 
     setUserMessages(dataReceive)
-    scrollDownMessages()
   }
 
   useEffect(() => {
-    props.selectFriend(friends[0])
+    if (friends.length > 0 && !selectedFriend) {
+      props.selectFriend(friends[0])
+    }
 
+    if (friends.length === 0 && selectedFriend) {
+      props.selectFriend(null)
+    }
+  })
+
+  useEffect(() => {
     createWsConnection()
 
     return () => {
@@ -69,6 +82,17 @@ function Main(props) {
       }
     }
   }, [])
+
+  useEffect(() => {
+    if (friendsListOperation) {
+      if (friendsListOperation.status === 'send') {
+        sendMessage({
+          type: '__UPDATE__',
+          operation: friendsListOperation
+        })
+      }
+    }
+  }, [friendsListOperation])
 
   const cardClickHandler = friend => {
     props.selectFriend(friend)
@@ -136,13 +160,15 @@ function Main(props) {
 const mapStateToProps = state => {
   return {
     selectedFriend: state.chatPageState.selectedFriend,
-    filterContactsText: state.chatPageState.filterContactsText
+    filterContactsText: state.chatPageState.filterContactsText,
+    friendsListOperation: state.chatPageState.friendsListOperation
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    selectFriend: friend => dispatch(selectFriend(friend))
+    selectFriend: friend => dispatch(selectFriend(friend)),
+    updateFriendsList: operation => dispatch(updateFriendsList(operation))
   }
 }
 

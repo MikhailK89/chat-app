@@ -31,7 +31,7 @@ export const openFriendsModal = isOpened => {
 export const updateFriendsList = operation => {
   return {
     type: actionTypes.FRIENDS_UPDATE,
-    payload: {operation}
+    payload: operation
   }
 }
 

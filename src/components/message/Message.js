@@ -15,7 +15,7 @@ function Message(props) {
     addClasses += ' message__friend'
   }
 
-  const date = new Date(message.date)
+  const date = new Date(+message.date)
   const formatter = new Intl.DateTimeFormat('ru', {
     year: 'numeric',
     month: 'numeric',

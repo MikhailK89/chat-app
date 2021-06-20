@@ -14,7 +14,7 @@ function MessageForm(props) {
       from: userId,
       to: props.selectedFriend.id,
       text: messageText.trim(),
-      date: Date.now(),
+      date: Date.now().toString(),
       type: '__COMMON__'
     }
 

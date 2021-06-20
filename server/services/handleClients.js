@@ -22,6 +22,22 @@ function createHandleClients(clients, fbManager) {
           }
         })
       }
+
+      if (message.type === '__UPDATE__') {
+        const {operation} = message
+
+        if (clients.hasOwnProperty(operation.friendId)) {
+          clients[operation.friendId].send(JSON.stringify({
+            type: '__UPDATE__',
+            operation: {
+              ...operation,
+              status: 'get',
+              userId: operation.friendId,
+              friendId: operation.userId
+            }
+          }))
+        }
+      }
     })
 
     client.on('close', () => {

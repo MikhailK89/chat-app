@@ -29,14 +29,28 @@ function FindCard(props) {
   const btnHandler = async () => {
     if (btnState === 'add') {
       const dataReceive = await dbManager.addFriend({userId, friendId})
+
       btnManager.saveBtnType(friendId, 'delete')
       setBtnState('delete')
-      props.updateFriendsList('add')
+
+      props.updateFriendsList({
+        type: 'add',
+        status: 'send',
+        userId,
+        friendId
+      })
     } else {
       const dataReceive = await dbManager.deleteFriend({userId, friendId})
+
       btnManager.saveBtnType(friendId, 'add')
       setBtnState('add')
-      props.updateFriendsList('delete')
+
+      props.updateFriendsList({
+        type: 'delete',
+        status: 'send',
+        userId,
+        friendId
+      })
     }
   }
 

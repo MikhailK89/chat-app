@@ -100,14 +100,16 @@ app.post('/friends/search', async (req, res) => {
 
 app.post('/friends/add', async (req, res) => {
   const {userId, friendId} = req.body
-  const fbRes = await fbManager.addFriendId(userId, friendId)
-  res.json(fbRes)
+  const fbUserRes = await fbManager.addFriendId(userId, friendId)
+  const fbFriendRes = await fbManager.addFriendId(friendId, userId)
+  res.json({})
 })
 
 app.delete('/friends/delete', async (req, res) => {
   const {userId, friendId} = req.body
-  const fbRes = await fbManager.deleteFriendId(userId, friendId)
-  res.json(fbRes)
+  const fbUserRes = await fbManager.deleteFriendId(userId, friendId)
+  const fbFriendRes = await fbManager.deleteFriendId(friendId, userId)
+  res.json({})
 })
 
 app.listen(4200)

@@ -5,7 +5,7 @@ const initialState = {
   filterContactsText: '',
   menuIsActivated: false,
   friendsModalIsOpened: false,
-  friendsListOperation: {},
+  friendsListOperation: null,
   contactsAddModal: false,
   contactsDeleteModal: false,
   alertMessage: null
@@ -16,7 +16,7 @@ export default function chatPageState(state = initialState, action) {
     case actionTypes.SELECT_FRIEND:
       return {
         ...state,
-        selectedFriend: {...action.payload}
+        selectedFriend: action.payload ? {...action.payload} : null
       }
     case actionTypes.FILTER_CONTACTS:
       return {

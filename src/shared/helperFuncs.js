@@ -33,8 +33,8 @@ export const filterAndSortMessages = (userMessages, user, selectedFriend) => {
   })
 
   const sortMessages = filterMessages.sort((leftMessage, rightMessage) => {
-    return leftMessage.date > rightMessage.date ? 1 :
-      leftMessage.date < rightMessage.date ? -1 : 0
+    return +leftMessage.date > +rightMessage.date ? 1 :
+      +leftMessage.date < +rightMessage.date ? -1 : 0
   })
 
   return sortMessages
