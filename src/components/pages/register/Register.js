@@ -5,6 +5,7 @@ import {Link, useHistory} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {showAlertMessage} from '../../../redux/actions'
 import dbManager from '../../../services/databaseManager'
+import dbMessages from '../../../services/messagesTypes'
 
 import SendForm from '../../send_form/SendForm'
 
@@ -29,8 +30,8 @@ function Register(props) {
     setBtnState(false)
 
     activateAlertMessage({
-      type: 'success',
-      text: 'Регистрация прошла успешно',
+      type: dataReceive.type,
+      text: dbMessages[dataReceive.message],
       duration: 4000
     })
   }

@@ -9,14 +9,42 @@ class FirebaseManager {
     this.database = firebase.database()
   }
 
-  async registerUser(formData) {
-    const {email, password} = formData
-    return firebase.auth().createUserWithEmailAndPassword(email, password)
+  registerUser(formData) {
+    try {
+      const {email, password} = formData
+      return firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          return {
+            type: 'success',
+            message: 'REGISTER_SUCCESS',
+            userCredential
+          }
+        })
+        .catch(() => {
+          return {type: 'error', message: 'REGISTER_EMAIL_EXISTS'}
+        })
+    } catch (e) {
+      return {type: 'error', message: 'FIREBASE_NOT_CONNECTED'}
+    }
   }
 
-  async authUser(formData) {
-    const {email, password} = formData
-    return firebase.auth().signInWithEmailAndPassword(email, password)
+  authUser(formData) {
+    try {
+      const {email, password} = formData
+      return firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          return {
+            type: 'success',
+            message: 'AUTH_SUCCESS',
+            userCredential
+          }
+        })
+        .catch(() => {
+          return {type: 'error', message: 'AUTH_EMAIL_NOT_FOUND'}
+        })
+    } catch (e) {
+      return {type: 'error', message: 'FIREBASE_NOT_CONNECTED'}
+    }
   }
 
   getUserId() {
@@ -25,76 +53,125 @@ class FirebaseManager {
   }
 
   addUser(userId, formData) {
-    return this.database.ref('users/' + userId).set(formData)
-      .then(() => {
-        return {success: {message: 'USER_ADDED'}}
-      })
-      .catch(() => {
-        return {error: {message: 'USER_NOT_ADDED'}}
-      })
+    try {
+      return this.database.ref('users/' + userId).set(formData)
+        .then(() => {
+          return {type: 'success', message: 'DB_USER_ADDED'}
+        })
+        .catch(() => {
+          return {type: 'error', message: 'DB_USER_NOT_ADDED'}
+        })
+    } catch (e) {
+      return {type: 'error', message: 'FIREBASE_NOT_CONNECTED'}
+    }
   }
 
-  async getUser(userId) {
-    const fbRes = await this.database.ref('users/' + userId).once('value')
-    const userData = fbRes.val()
-
-    return userData
+  getUser(userId) {
+    try {
+      return this.database.ref('users/' + userId).once('value')
+        .then(fbRes => {
+          return {
+            type: 'success',
+            message: 'DB_USER_FOUND',
+            userData: fbRes.val()
+          }
+        })
+        .catch(() => {
+          return {type: 'error', message: 'DB_USER_NOT_FOUND'}
+        })
+    } catch (e) {
+      return {type: 'error', message: 'FIREBASE_NOT_CONNECTED'}
+    }
   }
 
-  async getUsers() {
-    const fbRes = await this.database.ref('users').once('value')
-    const usersData = fbRes.val()
-
-    return usersData
+  getUsers() {
+    try {
+      return this.database.ref('users').once('value')
+        .then(fbRes => {
+          return {
+            type: 'success',
+            message: 'DB_USERS_FOUND',
+            usersData: fbRes.val()
+          }
+        })
+        .catch(() => {
+          return {type: 'error', message: 'DB_USERS_NOT_FOUND'}
+        })
+    } catch (e) {
+      return {type: 'error', message: 'FIREBASE_NOT_CONNECTED'}
+    }
   }
 
-  async getUserMessages(userId) {
-    const fbRes = await this.database.ref('messages/' + userId).once('value')
-    const userMessages = fbRes.val()
-
-    return userMessages
+  getUserMessages(userId) {
+    try {
+      return this.database.ref('messages/' + userId).once('value')
+        .then(fbRes => {
+          return {
+            type: 'success',
+            message: 'DB_MESSAGES_FOUND',
+            userMessages: fbRes.val()
+          }
+        })
+        .catch(() => {
+          return {type: 'error', message: 'DB_MESSAGES_NOT_FOUND'}
+        })
+    } catch (e) {
+      return {type: 'error', message: 'FIREBASE_NOT_CONNECTED'}
+    }
   }
 
   addMessage(userId, message) {
-    return this.database.ref('messages/' + userId).push(message)
-      .then(() => {
-        return {success: {message: 'MESSAGE_SAVED'}}
-      })
-      .catch(() => {
-        return {error: {message: 'MESSAGE_NOT_SAVED'}}
-      })
+    try {
+      return this.database.ref('messages/' + userId).push(message)
+        .then(() => {
+          return {type: 'success', message: 'DB_MESSAGE_SAVED'}
+        })
+        .catch(() => {
+          return {type: 'error', message: 'DB_MESSAGE_NOT_SAVED'}
+        })
+    } catch (e) {
+      return {type: 'error', message: 'FIREBASE_NOT_CONNECTED'}
+    }
   }
 
   addFriendId(userId, friendId) {
-    return this.database.ref('users/' + userId + '/friendsIds')
-      .transaction(friendsIds => {
-        if (friendsIds) {
-          return [...friendsIds, friendId]
-        }
-        return friendsIds
-      })
-      .then(() => {
-        return {success: {message: 'CONTACT_ADDED'}}
-      })
-      .catch(() => {
-        return {error: {message: 'CONTACT_NOT_ADDED'}}
-      })
+    try {
+      return this.database.ref('users/' + userId + '/friendsIds')
+        .transaction(friendsIds => {
+          if (friendsIds) {
+            return [...friendsIds, friendId]
+          }
+          return friendsIds
+        })
+        .then(() => {
+          return {type: 'success', message: 'DB_CONTACT_ADDED'}
+        })
+        .catch(() => {
+          return {type: 'error', message: 'DB_CONTACT_NOT_ADDED'}
+        })
+    } catch (e) {
+      return {type: 'error', message: 'FIREBASE_NOT_CONNECTED'}
+    }
   }
 
   deleteFriendId(userId, friendId) {
-    return this.database.ref('users/' + userId + '/friendsIds')
-      .transaction(friendsIds => {
-        if (friendsIds) {
-          return friendsIds.filter(id => id !== friendId)
-        }
-        return friendsIds
-      })
-      .then(() => {
-        return {success: {message: 'CONTACT_DELETED'}}
-      })
-      .catch(() => {
-        return {error: {message: 'CONTACT_NOT_DELETED'}}
-      })
+    try {
+      return this.database.ref('users/' + userId + '/friendsIds')
+        .transaction(friendsIds => {
+          if (friendsIds) {
+            return friendsIds.filter(id => id !== friendId)
+          }
+          return friendsIds
+        })
+        .then(() => {
+          return {type: 'success', message: 'DB_CONTACT_DELETED'}
+        })
+        .catch(() => {
+          return {type: 'error', message: 'DB_CONTACT_NOT_DELETED'}
+        })
+    } catch (e) {
+      return {type: 'error', message: 'FIREBASE_NOT_CONNECTED'}
+    }
   }
 }
 

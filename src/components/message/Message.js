@@ -3,8 +3,7 @@ import './messageStyles.scss'
 function Message(props) {
   const {message} = props
 
-  const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
-  const userId = tokenInfo.localId
+  const {userId} = JSON.parse(localStorage.getItem('authInfo'))
   const authorId = message.from
 
   let addClasses = ''

@@ -12,8 +12,7 @@ import ContactsDelete from '../../modals/contacts_delete/ContactsDelete'
 
 function Chat(props) {
   const {contactsAddModal, contactsDeleteModal} = props
-  const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
-  const userId = tokenInfo.localId
+  const {userId} = JSON.parse(localStorage.getItem('authInfo'))
 
   const [userInfo, setUserInfo] = useState(null)
 
@@ -28,7 +27,7 @@ function Chat(props) {
 
   return (
     <div className="chat">
-      {tokenInfo && userInfo && (
+      {userId && userInfo && (
         <>
           {contactsAddModal && <ContactsAdd />}
           {contactsDeleteModal && <ContactsDelete />}

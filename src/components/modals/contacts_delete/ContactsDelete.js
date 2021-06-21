@@ -7,8 +7,7 @@ import dbManager from '../../../services/databaseManager'
 import FindFriends from '../../find-friends/FindFriends'
 
 function ContactsDelete(props) {
-  const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
-  const userId = tokenInfo.localId
+  const {userId} = JSON.parse(localStorage.getItem('authInfo'))
 
   const [friendsList, setFriendsList] = useState([])
   const [savedFriendsList, setSavedFriendsList] = useState([])

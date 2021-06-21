@@ -28,6 +28,25 @@ function Main(props) {
     contElem.scrollTop = contElem.scrollHeight - contElem.clientHeight
   }
 
+  const resetFriendSelection = () => {
+    if (friends.length > 0 && !selectedFriend) {
+      props.selectFriend(friends[0])
+      return
+    }
+
+    if (friends.length === 0 && selectedFriend) {
+      props.selectFriend(null)
+      return
+    }
+
+    if (friendsListOperation?.friendId === selectedFriend?.id) {
+      if (friendsListOperation?.type === 'delete') {
+        props.selectFriend(null)
+        return
+      }
+    }
+  }
+
   const sendMessage = async (message) => {
     if (webSocket) {
       if (message.type === '__COMMON__') {
@@ -69,13 +88,7 @@ function Main(props) {
   }
 
   useEffect(() => {
-    if (friends.length > 0 && !selectedFriend) {
-      props.selectFriend(friends[0])
-    }
-
-    if (friends.length === 0 && selectedFriend) {
-      props.selectFriend(null)
-    }
+    resetFriendSelection()
   })
 
   useEffect(() => {
@@ -91,10 +104,11 @@ function Main(props) {
   useEffect(() => {
     if (friendsListOperation) {
       if (friendsListOperation.status === 'send') {
-        sendMessage({
+        const createdMessage = {
           type: '__UPDATE__',
           operation: friendsListOperation
-        })
+        }
+        sendMessage(createdMessage)
       }
     }
   }, [friendsListOperation])

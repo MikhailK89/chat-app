@@ -4,8 +4,7 @@ import {useState} from 'react'
 import {connect} from 'react-redux'
 
 function MessageForm(props) {
-  const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
-  const userId = tokenInfo.localId
+  const {userId} = JSON.parse(localStorage.getItem('authInfo'))
 
   const [messageText, setMessageText] = useState('')
 

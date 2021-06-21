@@ -1,27 +1,45 @@
 const FIREBASE_NOT_CONNECTED = 'FIREBASE_NOT_CONNECTED'
-const EMAIL_EXISTS = 'EMAIL_EXISTS'
-const EMAIL_NOT_FOUND = 'EMAIL_NOT_FOUND'
-const USER_ADDED = 'USER_ADDED'
-const USER_NOT_ADDED = 'USER_NOT_ADDED'
-const MESSAGE_SAVED = 'MESSAGE_SAVED'
-const MESSAGE_NOT_SAVED = 'MESSAGE_NOT_SAVED'
-const CONTACT_ADDED = 'CONTACT_ADDED'
-const CONTACT_NOT_ADDED = 'CONTACT_NOT_ADDED'
-const CONTACT_DELETED = 'CONTACT_DELETED'
-const CONTACT_NOT_DELETED = 'CONTACT_NOT_DELETED'
+const REGISTER_SUCCESS = 'REGISTER_SUCCESS'
+const REGISTER_EMAIL_EXISTS = 'REGISTER_EMAIL_EXISTS'
+const AUTH_SUCCESS = 'AUTH_SUCCESS'
+const AUTH_EMAIL_NOT_FOUND = 'AUTH_EMAIL_NOT_FOUND'
+const DB_USER_ADDED = 'DB_USER_ADDED'
+const DB_USER_NOT_ADDED = 'DB_USER_NOT_ADDED'
+const DB_USER_FOUND = 'DB_USER_FOUND'
+const DB_USER_NOT_FOUND = 'DB_USER_NOT_FOUND'
+const DB_USERS_FOUND = 'DB_USERS_FOUND'
+const DB_USERS_NOT_FOUND = 'DB_USERS_NOT_FOUND'
+const DB_MESSAGES_FOUND = 'DB_MESSAGES_FOUND'
+const DB_MESSAGES_NOT_FOUND = 'DB_MESSAGES_NOT_FOUND'
+const DB_MESSAGE_SAVED = 'DB_MESSAGE_SAVED'
+const DB_MESSAGE_NOT_SAVED = 'DB_MESSAGE_NOT_SAVED'
+const DB_CONTACT_ADDED = 'DB_CONTACT_ADDED'
+const DB_CONTACT_NOT_ADDED = 'DB_CONTACT_NOT_ADDED'
+const DB_CONTACT_DELETED = 'DB_CONTACT_DELETED'
+const DB_CONTACT_NOT_DELETED = 'DB_CONTACT_NOT_DELETED'
+const SERVER_ERROR = 'SERVER_ERROR'
 
-const messages = {
+const dbMessages = {
   [FIREBASE_NOT_CONNECTED]: 'Ошибка подключения к серверу Firebase',
-  [EMAIL_EXISTS]: 'Такой пользователь уже есть в системе',
-  [EMAIL_NOT_FOUND]: 'Пользователь не найден. Необходима регистрация',
-  [USER_ADDED]: 'Пользователь успешно добавлен',
-  [USER_NOT_ADDED]: 'При добавлении пользователя произошла ошибка',
-  [MESSAGE_SAVED]: 'Сообщение успешно сохранено',
-  [MESSAGE_NOT_SAVED]: 'При сохранении сообщения произошла ошибка',
-  [CONTACT_ADDED]: 'Новый контакт успешно добавлен',
-  [CONTACT_NOT_ADDED]: 'При добавлении контакта произошла ошибка',
-  [CONTACT_DELETED]: 'Контакт успешно удалён',
-  [CONTACT_NOT_DELETED]: 'При удалении контакта произошла ошибка'
+  [REGISTER_SUCCESS]: 'Регистрация прошла успешно',
+  [REGISTER_EMAIL_EXISTS]: 'Такой пользователь уже есть в системе',
+  [AUTH_SUCCESS]: 'Авторизация прошла успешно',
+  [AUTH_EMAIL_NOT_FOUND]: 'Пользователь не найден. Необходима регистрация',
+  [DB_USER_ADDED]: 'Пользователь успешно добавлен',
+  [DB_USER_NOT_ADDED]: 'При добавлении пользователя произошла ошибка',
+  [DB_USER_FOUND]: 'Пользователь успешно найден в базе данных',
+  [DB_USER_NOT_FOUND]: 'Не удалось найти пользователя в базе данных',
+  [DB_USERS_FOUND]: 'Список всех пользователей успешно получен',
+  [DB_USERS_NOT_FOUND]: 'Не удалось получить список всех пользователей',
+  [DB_MESSAGES_FOUND]: 'Список сообщений пользователя успешно получен',
+  [DB_MESSAGES_NOT_FOUND]: 'Не удалось получить список сообщений пользователя',
+  [DB_MESSAGE_SAVED]: 'Сообщение успешно сохранено',
+  [DB_MESSAGE_NOT_SAVED]: 'При сохранении сообщения произошла ошибка',
+  [DB_CONTACT_ADDED]: 'Новый контакт успешно добавлен',
+  [DB_CONTACT_NOT_ADDED]: 'При добавлении контакта произошла ошибка',
+  [DB_CONTACT_DELETED]: 'Контакт успешно удалён',
+  [DB_CONTACT_NOT_DELETED]: 'При удалении контакта произошла ошибка',
+  [SERVER_ERROR]: 'Не удалось подключиться к серверу. Сервер не отвечает'
 }
 
-export default messages
+export default dbMessages

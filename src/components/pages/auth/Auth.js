@@ -14,11 +14,14 @@ function Auth() {
 
   const sendFormHandler = async (formData) => {
     setBtnState(true)
-    const tokenInfo = await dbManager.authUser(formData)
+
+    const authInfo = await dbManager.authUser(formData)
+    const {userId} = authInfo
+
     setBtnState(false)
 
-    if (tokenInfo) {
-      localStorage.setItem('tokenInfo', JSON.stringify(tokenInfo))
+    if (userId) {
+      localStorage.setItem('authInfo', JSON.stringify({userId}))
       history.push('/chat')
     }
   }

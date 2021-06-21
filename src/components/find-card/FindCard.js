@@ -10,8 +10,7 @@ import btnManager from '../../services/btnStateManager'
 function FindCard(props) {
   const {findFriend, btnType} = props
 
-  const tokenInfo = JSON.parse(localStorage.getItem('tokenInfo'))
-  const userId = tokenInfo.localId
+  const {userId} = JSON.parse(localStorage.getItem('authInfo'))
   const friendId = findFriend.id
 
   const [btnState, setBtnState] = useState(btnType)
