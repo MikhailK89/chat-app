@@ -28,8 +28,13 @@ function Main(props) {
     contElem.scrollTop = contElem.scrollHeight - contElem.clientHeight
   }
 
-  const sendMessage = message => {
+  const sendMessage = async (message) => {
     if (webSocket) {
+      if (message.type === '__COMMON__') {
+        const {from, to} = message
+        const dbSendRes = await dbManager.sendMessage(from, to, message)
+      }
+
       webSocket.send(JSON.stringify(message))
     }
   }

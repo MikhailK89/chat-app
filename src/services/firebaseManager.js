@@ -1,8 +1,7 @@
-const firebase = require('firebase/app')
-require('firebase/auth')
-require('firebase/database')
-const fbConfig = require('./firebaseConfig')
-const fetch = require('node-fetch')
+import firebase from 'firebase/app'
+import 'firebase/auth'
+import 'firebase/database'
+import fbConfig from './firebaseConfig'
 
 class FirebaseManager {
   constructor() {
@@ -11,45 +10,18 @@ class FirebaseManager {
   }
 
   async registerUser(formData) {
-    const {apiKey} = fbConfig
     const {email, password} = formData
-
-    try {
-      const serverRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({email, password, returnSecureToken: true})
-      })
-
-      const dataReceive = await serverRes.json()
-
-      return dataReceive
-    } catch (e) {
-      return {error: {message: 'FIREBASE_NOT_CONNECTED'}}
-    }
+    return firebase.auth().createUserWithEmailAndPassword(email, password)
   }
 
   async authUser(formData) {
-    const {apiKey} = fbConfig
     const {email, password} = formData
+    return firebase.auth().signInWithEmailAndPassword(email, password)
+  }
 
-    try {
-      const serverRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({email, password, returnSecureToken: true})
-      })
-
-      const dataReceive = await serverRes.json()
-
-      return dataReceive
-    } catch (e) {
-      return {error: {message: 'FIREBASE_NOT_CONNECTED'}}
-    }
+  getUserId() {
+    const user = firebase.auth().currentUser
+    return user ? user.uid : null
   }
 
   addUser(userId, formData) {
@@ -126,4 +98,4 @@ class FirebaseManager {
   }
 }
 
-module.exports = new FirebaseManager()
+export default new FirebaseManager()

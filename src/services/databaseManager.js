@@ -1,102 +1,114 @@
+import fbManager from './firebaseManager'
 import {domain} from '../settings/fetchSettings'
 
 class DatabaseManager {
   async authUser(formData) {
-    const res = await fetch(`${domain}/auth`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(formData)
-    })
+    const {email, password} = formData
+    let userId = fbManager.getUserId()
 
-    const tokenInfo = await res.json()
+    if (!userId) {
+      const fbAuthRes = await fbManager.authUser({email, password})
+      userId = fbManager.getUserId()
+    }
 
-    return tokenInfo
+    return {localId: userId}
   }
 
   async registerUser(formData) {
-    const res = await fetch(`${domain}/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(formData)
-    })
+    const {name, email, password} = formData
 
-    const data = await res.json()
+    const fbRegRes = await fbManager.registerUser({email, password})
+    const fbAuthRes = await fbManager.authUser({email, password})
 
-    return data
-  }
+    const userId = fbManager.getUserId()
 
-  async getFriendsList(dataSend) {
-    const res = await fetch(`${domain}/friends/search`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(dataSend)
-    })
+    if (userId) {
+      const fbAddUserRes = await fbManager.addUser(userId, {
+        id: userId,
+        userName: name,
+        profileImage: '',
+        friendsIds: [''],
+        email,
+        password
+      })
+    }
 
-    const dataReceive = await res.json()
-
-    return dataReceive
-  }
-
-  async addFriend(dataSend) {
-    const res = await fetch(`${domain}/friends/add`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(dataSend)
-    })
-
-    const dataReceive = await res.json()
-
-    return dataReceive
-  }
-
-  async deleteFriend(dataSend) {
-    const res = await fetch(`${domain}/friends/delete`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(dataSend)
-    })
-
-    const dataReceive = await res.json()
-
-    return dataReceive
+    return {}
   }
 
   async getUserInfo(dataSend) {
-    const res = await fetch(`${domain}/user/info`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(dataSend)
-    })
+    const {userId} = dataSend
 
-    const dataReceive = await res.json()
+    const userData = await fbManager.getUser(userId)
+    const friendsData = []
+    const friendsIds = userData.friendsIds
 
-    return dataReceive
+    for (let i = 0; i < friendsIds.length; i++) {
+      if (friendsIds[i] !== '') {
+        const friendData = await fbManager.getUser(friendsIds[i])
+        friendsData.push(friendData)
+      }
+    }
+
+    return {userData, friendsData}
   }
 
   async getUserMessages(dataSend) {
-    const res = await fetch(`${domain}/user/messages`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(dataSend)
+    const {userId} = dataSend
+
+    const fbRes = await fbManager.getUserMessages(userId)
+    let userMessages = []
+
+    if (fbRes) {
+      userMessages = Object.keys(fbRes).map(messageId => fbRes[messageId])
+    }
+
+    return userMessages
+  }
+
+  async sendMessage(userId, friendId, message) {
+    const fbUserRes = await fbManager.addMessage(userId, message)
+    const fbFriendRes = await fbManager.addMessage(friendId, message)
+    return {}
+  }
+
+  async getFriendsList(dataSend) {
+    const {userId} = dataSend
+    const filterText = dataSend.filterText.toLowerCase()
+
+    const userData = await fbManager.getUser(userId)
+    const friendsIds = userData.friendsIds
+
+    const fbUsers = await fbManager.getUsers()
+    const usersData = Object.keys(fbUsers).map(uid => fbUsers[uid])
+
+    const friendsList = usersData.filter(user => {
+      const regexp = /(\S+)\s+(\S+)/
+      const userNameArr = user.userName.toLowerCase().match(regexp)
+
+      const filterCond = user.id !== userId && !friendsIds.includes(user.id) &&
+        (userNameArr[1].startsWith(filterText) || userNameArr[2].startsWith(filterText))
+
+      return filterCond
     })
 
-    const dataReceive = await res.json()
+    return friendsList
+  }
 
-    return dataReceive
+  async addFriend(dataSend) {
+    const {userId, friendId} = dataSend
+    const fbUserRes = await fbManager.addFriendId(userId, friendId)
+    const fbFriendRes = await fbManager.addFriendId(friendId, userId)
+
+    return {}
+  }
+
+  async deleteFriend(dataSend) {
+    const {userId, friendId} = dataSend
+    const fbUserRes = await fbManager.deleteFriendId(userId, friendId)
+    const fbFriendRes = await fbManager.deleteFriendId(friendId, userId)
+
+    return {}
   }
 
   async getOnlineStatus(dataSend) {

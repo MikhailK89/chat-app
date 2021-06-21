@@ -1,4 +1,4 @@
-function createHandleClients(clients, fbManager) {
+function createHandleClients(clients) {
   return client => {
 
     client.on('message', async (message) => {
@@ -10,12 +10,6 @@ function createHandleClients(clients, fbManager) {
       }
 
       if (message.type === '__COMMON__') {
-        const userFromId = message.from
-        const userToId = message.to
-
-        const fbUserFromRes = await fbManager.addMessage(userFromId, message)
-        const fbUserToRes = await fbManager.addMessage(userToId, message)
-
         Object.keys(clients).forEach(id => {
           if (id === message.from || id === message.to) {
             clients[id].send(JSON.stringify({type: '__RECEIVED__'}))
