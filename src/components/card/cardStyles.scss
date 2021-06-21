@@ -20,4 +20,12 @@
 
 .info__status {
   font-size: .6rem;
+
+  &.online {
+    color: #3CB371;
+  }
+
+  &.offline {
+    color: #CD5C5C;
+  }
 }

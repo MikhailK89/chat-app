@@ -98,6 +98,20 @@ class DatabaseManager {
 
     return dataReceive
   }
+
+  async getOnlineStatus(dataSend) {
+    const res = await fetch(`${domain}/user/status`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(dataSend)
+    })
+
+    const dataReceive = await res.json()
+
+    return dataReceive
+  }
 }
 
 export default new DatabaseManager()

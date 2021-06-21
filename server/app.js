@@ -71,6 +71,16 @@ app.post('/user/messages', async (req, res) => {
   res.json(userMessages)
 })
 
+app.post('/user/status', (req, res) => {
+  const {friendId} = req.body
+
+  if (clients.hasOwnProperty(friendId)) {
+    res.json({status: 'online'})
+  } else {
+    res.json({status: 'offline'})
+  }
+})
+
 app.get('/messages', (req, res) => {
   myWs.handleUpgrade(req, req.socket, Buffer.alloc(0), handleClients)
 })
