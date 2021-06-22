@@ -2,8 +2,8 @@ import './chatStyles.scss'
 
 import {useState, useEffect} from 'react'
 import {connect} from 'react-redux'
-
 import dbManager from '../../../services/databaseManager'
+import dbMessages from '../../../services/messagesTypes'
 
 import Header from '../../header/Header'
 import Main from '../../main/Main'
@@ -11,13 +11,24 @@ import ContactsAdd from '../../modals/contacts_add/ContactsAdd'
 import ContactsDelete from '../../modals/contacts_delete/ContactsDelete'
 
 function Chat(props) {
-  const {contactsAddModal, contactsDeleteModal} = props
+  const {contactsAddModal, contactsDeleteModal, activateAlertMessage} = props
   const {userId} = JSON.parse(localStorage.getItem('authInfo'))
 
   const [userInfo, setUserInfo] = useState(null)
 
   const getUserInfo = async () => {
     const dataReceive = await dbManager.getUserInfo({userId})
+
+    if (dataReceive.type === 'error') {
+      activateAlertMessage({
+        type: dataReceive.type,
+        text: dbMessages[dataReceive.message],
+        duration: 4000
+      })
+
+      return
+    }
+
     setUserInfo(dataReceive)
   }
 
@@ -47,7 +58,13 @@ const mapStateToProps = state => {
   }
 }
 
+const mapDispatchToProps = dispatch => {
+  return {
+    activateAlertMessage: messageInfo => dispatch(showAlertMessage(messageInfo))
+  }
+}
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(Chat)

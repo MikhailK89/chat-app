@@ -15,7 +15,16 @@ class DatabaseManager {
     const {name, email, password} = formData
 
     const fbRegRes = await fbManager.registerUser({email, password})
+
+    if (fbRegRes.type === 'error') {
+      return fbRegRes
+    }
+
     const fbAuthRes = await fbManager.authUser({email, password})
+
+    if (fbAuthRes.type === 'error') {
+      return fbAuthRes
+    }
 
     const userId = fbManager.getUserId()
 
@@ -28,6 +37,10 @@ class DatabaseManager {
         email,
         password
       })
+
+      if (fbAddUserRes.type === 'error') {
+        return fbAddUserRes
+      }
     }
 
     return fbRegRes
@@ -45,14 +58,14 @@ class DatabaseManager {
     const friendsData = []
     const friendsIds = fbGetUserRes.userData.friendsIds
 
-    let saveError = null
+    let savedError = null
 
     for (let i = 0; i < friendsIds.length; i++) {
       if (friendsIds[i] !== '') {
         const fbGetFriendRes = await fbManager.getUser(friendsIds[i])
 
         if (fbGetFriendRes.type === 'error') {
-          saveError = fbGetFriendRes
+          savedError = fbGetFriendRes
           continue
         }
 
@@ -60,9 +73,11 @@ class DatabaseManager {
       }
     }
 
-    const clientRes = {userData: fbGetUserRes.userData, friendsData}
+    const data = {userData: fbGetUserRes.userData, friendsData}
 
-    return saveError ? {...saveError, ...clientRes} : clientRes
+    return savedError ?
+      {type: 'error', message: 'DB_USER_INFO_NOT_FOUND'} :
+      {type: 'success', message: 'DB_USER_INFO_FOUND', ...data}
   }
 
   async getUserMessages(dataSend) {
@@ -76,7 +91,14 @@ class DatabaseManager {
 
     const {userMessages} = fbRes
 
-    return userMessages ? Object.keys(userMessages).map(id => userMessages[id]) : []
+    if (userMessages) {
+      const filteredUserMessages = Object.keys(userMessages)
+        .map(id => userMessages[id])
+
+      return {...fbRes, userMessages: filteredUserMessages}
+    } else {
+      return {...fbRes, userMessages: []}
+    }
   }
 
   async sendMessage(userId, friendId, message) {
@@ -115,17 +137,23 @@ class DatabaseManager {
 
     const {usersData} = fbGetUsersRes
 
-    return usersData ? Object.keys(usersData)
-      .map(id => usersData[id])
-      .filter(user => {
-        const regexp = /(\S+)\s+(\S+)/
-        const userNameArr = user.userName.toLowerCase().match(regexp)
+    if (usersData) {
+      const filteredUsersData = Object.keys(usersData)
+        .map(id => usersData[id])
+        .filter(user => {
+          const regexp = /(\S+)\s+(\S+)/
+          const userNameArr = user.userName.toLowerCase().match(regexp)
 
-        const filterCond = user.id !== userId && !friendsIds.includes(user.id) &&
-          (userNameArr[1].startsWith(filterText) || userNameArr[2].startsWith(filterText))
+          const filterCond = user.id !== userId && !friendsIds.includes(user.id) &&
+            (userNameArr[1].startsWith(filterText) || userNameArr[2].startsWith(filterText))
 
-        return filterCond
-      }) : []
+          return filterCond
+        })
+
+      return {...fbGetUsersRes, usersData: filteredUsersData}
+    } else {
+      return {...fbGetUsersRes, usersData: []}
+    }
   }
 
   async addFriend(dataSend) {
@@ -176,9 +204,13 @@ class DatabaseManager {
 
       const dataReceive = await res.json()
 
-      return dataReceive
+      return {
+        type: 'success',
+        message: 'SERVER_CONTACT_STATUS_SUCCESS',
+        ...dataReceive
+      }
     } catch (e) {
-      return {type: 'error', message: 'SERVER_ERROR'}
+      return {type: 'error', message: 'SERVER_CONTACT_STATUS_ERROR'}
     }
   }
 }

@@ -34,6 +34,10 @@ function Register(props) {
       text: dbMessages[dataReceive.message],
       duration: 4000
     })
+
+    if (dataReceive.type === 'success') {
+      history.push('/auth')
+    }
   }
 
   return (

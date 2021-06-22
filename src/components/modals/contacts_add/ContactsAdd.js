@@ -1,9 +1,13 @@
 import {useState} from 'react'
+import {connect} from 'react-redux'
+import {showAlertMessage} from '../../../redux/actions'
 import dbManager from '../../../services/databaseManager'
+import dbMessages from '../../../services/messagesTypes'
 
 import FindFriends from '../../find-friends/FindFriends'
 
-function ContactsAdd() {
+function ContactsAdd(props) {
+  const {activateAlertMessage} = props
   const {userId} = JSON.parse(localStorage.getItem('authInfo'))
 
   const [friendsList, setFriendsList] = useState([])
@@ -17,7 +21,18 @@ function ContactsAdd() {
     }
 
     const dataReceive = await dbManager.getFriendsList({userId, filterText})
-    setFriendsList(dataReceive)
+
+    if (dataReceive.type === 'error') {
+      activateAlertMessage({
+        type: dataReceive.type,
+        text: dbMessages[dataReceive.message],
+        duration: 4000
+      })
+
+      return
+    }
+
+    setFriendsList(dataReceive.usersData)
   }
 
   const closeModal = () => {
@@ -35,4 +50,13 @@ function ContactsAdd() {
   )
 }
 
-export default ContactsAdd
+const mapDispatchToProps = dispatch => {
+  return {
+    activateAlertMessage: messageInfo => dispatch(showAlertMessage(messageInfo))
+  }
+}
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(ContactsAdd)

@@ -2,11 +2,11 @@ import './mainStyles.scss'
 
 import {useState, useEffect, useRef} from 'react'
 import {connect} from 'react-redux'
-import {selectFriend, updateFriendsList} from '../../redux/actions'
-import {wsDomain} from '../../settings/fetchSettings'
+import {selectFriend, updateFriendsList, showAlertMessage} from '../../redux/actions'
 import {filterByName, filterAndSortMessages} from '../../shared/helperFuncs'
-
+import {wsDomain} from '../../settings/fetchSettings'
 import dbManager from '../../services/databaseManager'
+import dbMessages from '../../services/messagesTypes'
 
 import Filter from '../filter/Filter'
 import Card from '../card/Card'
@@ -15,14 +15,13 @@ import Footer from '../footer/Footer'
 
 function Main(props) {
   const {user, friends} = props
+  const {selectedFriend, friendsListOperation, activateAlertMessage} = props
 
   const messagesCont = useRef(null)
 
   const [userMessages, setUserMessages] = useState(null)
   const [webSocket, setWebSocket] = useState(null)
   const [receivedMessage, setReceivedMessage] = useState(null)
-
-  const {selectedFriend, friendsListOperation} = props
 
   const scrollDownMessages = () => {
     const contElem = messagesCont.current
@@ -50,45 +49,77 @@ function Main(props) {
 
   const sendMessage = async (message) => {
     if (webSocket) {
+      if (message.type === '__INIT__') {
+        webSocket.send(JSON.stringify(message))
+      }
+
       if (message.type === '__COMMON__') {
         const {from, to} = message
         const dbSendRes = await dbManager.sendMessage(from, to, message)
+
+        if (dbSendRes.type === 'error') {
+          activateAlertMessage({
+            type: dbSendRes.type,
+            text: dbMessages[dbSendRes.message],
+            duration: 4000
+          })
+
+          return
+        }
+
+        webSocket.send(JSON.stringify(message))
       }
 
-      webSocket.send(JSON.stringify(message))
+      if (message.type === '__UPDATE__') {
+        webSocket.send(JSON.stringify(message))
+      }
     }
   }
 
   const createWsConnection = () => {
-    const myWs = new WebSocket(`${wsDomain}/messages`)
+    try {
+      const myWs = new WebSocket(`${wsDomain}/messages`)
 
-    myWs.onmessage = message => {
-      setReceivedMessage(JSON.parse(message.data))
-    }
+      myWs.onmessage = message => {
+        setReceivedMessage(JSON.parse(message.data))
+      }
 
-    myWs.onopen = () => {
-      myWs.send(JSON.stringify({userId: user.id, type: '__INIT__'}))
-      setWebSocket(myWs)
+      myWs.onopen = () => {
+        myWs.send(JSON.stringify({userId: user.id, type: '__INIT__'}))
+        setWebSocket(myWs)
+      }
+    } catch (e) {
+      activateAlertMessage({
+        type: 'error',
+        text: dbMessages['WS_CHAT_NOT_CONNECTED'],
+        duration: 4000
+      })
     }
   }
 
   const getUserMessages = async () => {
     const dataReceive = await dbManager.getUserMessages({userId: user.id})
-    setUserMessages(dataReceive)
+
+    if (dataReceive.type === 'error') {
+      activateAlertMessage({
+        type: dataReceive.type,
+        text: dbMessages[dataReceive.message],
+        duration: 4000
+      })
+
+      return
+    }
+
+    setUserMessages(dataReceive.userMessages)
   }
 
   useEffect(() => {
     resetFriendSelection()
-  })
+  }, [friendsListOperation, friends, selectedFriend])
 
   useEffect(() => {
     createWsConnection()
-
-    return () => {
-      if (webSocket) {
-        webSocket.close()
-      }
-    }
+    return () => webSocket ? webSocket.close() : null
   }, [])
 
   useEffect(() => {
@@ -211,7 +242,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     selectFriend: friend => dispatch(selectFriend(friend)),
-    updateFriendsList: operation => dispatch(updateFriendsList(operation))
+    updateFriendsList: operation => dispatch(updateFriendsList(operation)),
+    activateAlertMessage: messageInfo => dispatch(showAlertMessage(messageInfo))
   }
 }
 

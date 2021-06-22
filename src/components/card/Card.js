@@ -7,11 +7,16 @@ function Card(props) {
   const {friend, cardClickHandler} = props
 
   const [onlineStatus, setOnlineStatus] = useState('offline')
-
   const addClasses = onlineStatus === 'online' ? ' online' : ' offline'
 
   const getOnlineStatus = async () => {
     const res = await dbManager.getOnlineStatus({friendId: friend.id})
+
+    if (res.type === 'error') {
+      setOnlineStatus('offline')
+      return
+    }
+
     const {status} = res
     setOnlineStatus(status)
   }

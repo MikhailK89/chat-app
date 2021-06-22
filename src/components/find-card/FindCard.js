@@ -2,13 +2,13 @@ import './findCard.scss'
 
 import {useState} from 'react'
 import {connect} from 'react-redux'
-import {updateFriendsList} from '../../redux/actions'
-
+import {updateFriendsList, showAlertMessage} from '../../redux/actions'
 import dbManager from '../../services/databaseManager'
+import dbMessages from '../../services/messagesTypes'
 import btnManager from '../../services/btnStateManager'
 
 function FindCard(props) {
-  const {findFriend, btnType} = props
+  const {findFriend, btnType, activateAlertMessage} = props
 
   const {userId} = JSON.parse(localStorage.getItem('authInfo'))
   const friendId = findFriend.id
@@ -29,6 +29,16 @@ function FindCard(props) {
     if (btnState === 'add') {
       const dataReceive = await dbManager.addFriend({userId, friendId})
 
+      if (dataReceive.type === 'error') {
+        activateAlertMessage({
+          type: dataReceive.type,
+          text: dbMessages[dataReceive.message],
+          duration: 4000
+        })
+
+        return
+      }
+
       btnManager.saveBtnType(friendId, 'delete')
       setBtnState('delete')
 
@@ -40,6 +50,16 @@ function FindCard(props) {
       })
     } else {
       const dataReceive = await dbManager.deleteFriend({userId, friendId})
+
+      if (dataReceive.type === 'error') {
+        activateAlertMessage({
+          type: dataReceive.type,
+          text: dbMessages[dataReceive.message],
+          duration: 4000
+        })
+
+        return
+      }
 
       btnManager.saveBtnType(friendId, 'add')
       setBtnState('add')
@@ -70,7 +90,8 @@ function FindCard(props) {
 
 const mapDispatchToProps = dispatch => {
   return {
-    updateFriendsList: operation => dispatch(updateFriendsList(operation))
+    updateFriendsList: operation => dispatch(updateFriendsList(operation)),
+    activateAlertMessage: messageInfo => dispatch(showAlertMessage(messageInfo))
   }
 }
 
