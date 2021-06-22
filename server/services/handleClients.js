@@ -6,13 +6,13 @@ function createHandleClients(clients) {
 
       if (message.type === '__INIT__') {
         clients[message.userId] = client
-        client.send(JSON.stringify({type: '__RECEIVED__'}))
+        client.send(JSON.stringify(message))
       }
 
       if (message.type === '__COMMON__') {
         Object.keys(clients).forEach(id => {
           if (id === message.from || id === message.to) {
-            clients[id].send(JSON.stringify({type: '__RECEIVED__'}))
+            clients[id].send(JSON.stringify(message))
           }
         })
       }

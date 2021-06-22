@@ -20,6 +20,7 @@ function Main(props) {
 
   const [userMessages, setUserMessages] = useState(null)
   const [webSocket, setWebSocket] = useState(null)
+  const [receivedMessage, setReceivedMessage] = useState(null)
 
   const {selectedFriend, friendsListOperation} = props
 
@@ -62,17 +63,7 @@ function Main(props) {
     const myWs = new WebSocket(`${wsDomain}/messages`)
 
     myWs.onmessage = message => {
-      message = JSON.parse(message.data)
-
-      if (message.type === '__RECEIVED__') {
-        getUserMessages()
-      }
-
-      if (message.type === '__UPDATE__') {
-        if (message.operation.status === 'get') {
-          props.updateFriendsList(message.operation)
-        }
-      }
+      setReceivedMessage(JSON.parse(message.data))
     }
 
     myWs.onopen = () => {
@@ -83,7 +74,6 @@ function Main(props) {
 
   const getUserMessages = async () => {
     const dataReceive = await dbManager.getUserMessages({userId: user.id})
-
     setUserMessages(dataReceive)
   }
 
@@ -112,6 +102,40 @@ function Main(props) {
       }
     }
   }, [friendsListOperation])
+
+  useEffect(() => {
+    if (receivedMessage?.type === '__INIT__') {
+      getUserMessages()
+    }
+
+    if (receivedMessage?.type === '__COMMON__') {
+      getUserMessages()
+    }
+
+    if (receivedMessage?.type === '__UPDATE__') {
+      if (receivedMessage.operation.status === 'get') {
+        props.updateFriendsList(receivedMessage.operation)
+      }
+    }
+  }, [receivedMessage])
+
+  useEffect(() => {
+    if (receivedMessage?.type === '__INIT__') {
+      scrollDownMessages()
+    }
+
+    if (receivedMessage?.type === '__COMMON__') {
+      const {from, to} = receivedMessage
+
+      if (user.id === from && selectedFriend.id === to) {
+        scrollDownMessages()
+      }
+    }
+  }, [userMessages])
+
+  useEffect(() => {
+    scrollDownMessages()
+  }, [selectedFriend])
 
   const cardClickHandler = friend => {
     props.selectFriend(friend)
