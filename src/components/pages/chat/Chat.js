@@ -9,6 +9,7 @@ import Header from '../../header/Header'
 import Main from '../../main/Main'
 import ContactsAdd from '../../modals/contacts_add/ContactsAdd'
 import ContactsDelete from '../../modals/contacts_delete/ContactsDelete'
+import ProfileInfo from '../../modals/profile_info/ProfileInfo'
 
 function Chat(props) {
   const {contactsAddModal, contactsDeleteModal, activateAlertMessage} = props
@@ -40,6 +41,7 @@ function Chat(props) {
     <div className="chat">
       {userId && userInfo && (
         <>
+          <ProfileInfo />
           {contactsAddModal && <ContactsAdd />}
           {contactsDeleteModal && <ContactsDelete />}
           <Header user={userInfo.userData} />

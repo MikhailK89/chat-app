@@ -45,8 +45,8 @@ function Menu(props) {
         </div>
 
         <div className="menu__options-flex">
-          <span className="menu__options-icon material-icons">portrait</span>
-          <span className="menu__options-title">Добавить фотографию</span>
+          <span className="menu__options-icon material-icons">edit</span>
+          <span className="menu__options-title">Редактировать</span>
         </div>
       </div>
     </div>

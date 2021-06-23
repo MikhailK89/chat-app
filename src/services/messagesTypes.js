@@ -22,6 +22,8 @@ const DB_CONTACT_NOT_DELETED = 'DB_CONTACT_NOT_DELETED'
 const WS_CHAT_NOT_CONNECTED = 'WS_CHAT_NOT_CONNECTED'
 const SERVER_CONTACT_STATUS_SUCCESS = 'SERVER_CONTACT_STATUS_SUCCESS'
 const SERVER_CONTACT_STATUS_ERROR = 'SERVER_CONTACT_STATUS_ERROR'
+const SERVER_PROFILE_IMAGE_SUCCESS = 'SERVER_PROFILE_IMAGE_SUCCESS'
+const SERVER_PROFILE_IMAGE_ERROR = 'SERVER_PROFILE_IMAGE_ERROR'
 
 const dbMessages = {
   [FIREBASE_NOT_CONNECTED]: 'Ошибка подключения к серверу Firebase',
@@ -47,7 +49,9 @@ const dbMessages = {
   [DB_CONTACT_NOT_DELETED]: 'При удалении контакта произошла ошибка',
   [WS_CHAT_NOT_CONNECTED]: 'Произошла ошибка подключения к чату. Попробуйте перезагрузить страницу',
   [SERVER_CONTACT_STATUS_SUCCESS]: 'Статус контакта успешно получен',
-  [SERVER_CONTACT_STATUS_ERROR]: 'Не удалось получить статус контакта'
+  [SERVER_CONTACT_STATUS_ERROR]: 'Не удалось получить статус контакта',
+  [SERVER_PROFILE_IMAGE_SUCCESS]: 'Фотография профиля успешно загружена',
+  [SERVER_PROFILE_IMAGE_ERROR]: 'Не удалось загрузить фотографию профиля'
 }
 
 export default dbMessages

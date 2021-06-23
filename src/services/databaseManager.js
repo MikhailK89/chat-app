@@ -213,6 +213,17 @@ class DatabaseManager {
       return {type: 'error', message: 'SERVER_CONTACT_STATUS_ERROR'}
     }
   }
+
+  async sendProfileInfo(formData) {
+    try {
+      const serverRes = await fetch(`${domain}/user/profile`, {
+        method: 'POST',
+        body: formData
+      })
+
+      const data = await serverRes.json()
+    } catch (e) {}
+  }
 }
 
 export default new DatabaseManager()
