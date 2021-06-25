@@ -1,6 +1,8 @@
 import './cardStyles.scss'
+import defaultImg from '../../assets/images/default.jpg'
 
 import {useState, useEffect} from 'react'
+import * as helperFuncs from '../../shared/helperFuncs'
 import dbManager from '../../services/databaseManager'
 
 function Card(props) {
@@ -33,7 +35,12 @@ function Card(props) {
 
   return (
     <div className="contacts__card" onClick={cardClickHandler}>
-      <div className="card__photo"></div>
+      <div className="card__photo">
+        <img
+          src={helperFuncs.getImgPath(friend.profileImage, defaultImg)}
+          alt={friend.userName}
+        />
+      </div>
 
       <div className="card__info">
         <div className="info__name">{friend.userName}</div>

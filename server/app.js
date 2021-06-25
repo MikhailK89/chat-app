@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path')
 const multer = require('multer')
 const cors = require('cors')
 const app = express()
@@ -41,16 +42,15 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.get('/profile/image', (req, res) => {
-  const {name} = req.query
-
-})
-
 app.post('/user/profile', upload.single('filedata'), (req, res) => {
   const filedata = req.file
 
   if (filedata) {
-    res.json({type: 'success', message: 'SERVER_PROFILE_IMAGE_SUCCESS'})
+    res.json({
+      type: 'success',
+      message: 'SERVER_PROFILE_IMAGE_SUCCESS',
+      profileImage: filedata.filename
+    })
   } else {
     res.json({type: 'error', message: 'SERVER_PROFILE_IMAGE_ERROR'})
   }

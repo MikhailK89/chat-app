@@ -221,8 +221,21 @@ class DatabaseManager {
         body: formData
       })
 
-      const data = await serverRes.json()
-    } catch (e) {}
+      const serverData = await serverRes.json()
+
+      if (serverData.type === 'error') {
+        return serverData
+      }
+
+      const fbRes = fbManager.changeProfileInfo({
+        userId: formData.get('userId'),
+        profileImage: serverData.profileImage
+      })
+
+      return fbRes
+    } catch (e) {
+      return {type: 'error', message: 'DB_PROFILE_NOT_UPDATED'}
+    }
   }
 }
 

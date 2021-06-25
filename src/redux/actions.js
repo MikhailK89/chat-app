@@ -55,3 +55,24 @@ export const showAlertMessage = messageInfo => {
     payload: messageInfo
   }
 }
+
+export const updateProfile = operation => {
+  return {
+    type: actionTypes.PROFILE_UPDATE,
+    payload: operation
+  }
+}
+
+export const openProfileModal = isOpened => {
+  return {
+    type: actionTypes.PROFILE_MODAL,
+    payload: isOpened
+  }
+}
+
+export const activateSubstrate = isActivated => {
+  return {
+    type: actionTypes.ACTIVATE_SUBSTRATE,
+    payload: isActivated
+  }
+}

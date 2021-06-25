@@ -7,11 +7,23 @@
 }
 
 .card__photo {
+  position: relative;
   width: 60px;
   height: 60px;
   margin-right: .2rem;
   border-radius: 50%;
-  border: 1px solid #f9f9f9;
+  background-color: #434753;
+  overflow: hidden;
+
+  img {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 55px;
+    height: 55px;
+  }
 }
 
 .card__info {

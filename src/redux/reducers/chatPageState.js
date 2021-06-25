@@ -2,12 +2,15 @@ import * as actionTypes from '../actionTypes'
 
 const initialState = {
   selectedFriend: null,
-  filterContactsText: '',
+  profileOperation: null,
+  friendsListOperation: null,
   menuIsActivated: false,
   friendsModalIsOpened: false,
-  friendsListOperation: null,
   contactsAddModal: false,
   contactsDeleteModal: false,
+  profileModal: false,
+  substrateIsActivated: false,
+  filterContactsText: '',
   alertMessage: null
 }
 
@@ -52,6 +55,21 @@ export default function chatPageState(state = initialState, action) {
       return {
         ...state,
         alertMessage: action.payload ? {...action.payload} : null
+      }
+    case actionTypes.PROFILE_UPDATE:
+      return {
+        ...state,
+        profileOperation: {...action.payload}
+      }
+    case actionTypes.PROFILE_MODAL:
+      return {
+        ...state,
+        profileModal: action.payload
+      }
+    case actionTypes.ACTIVATE_SUBSTRATE:
+      return {
+        ...state,
+        substrateIsActivated: action.payload
       }
     default:
       return {

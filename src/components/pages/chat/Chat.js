@@ -10,11 +10,23 @@ import Main from '../../main/Main'
 import ContactsAdd from '../../modals/contacts_add/ContactsAdd'
 import ContactsDelete from '../../modals/contacts_delete/ContactsDelete'
 import ProfileInfo from '../../modals/profile_info/ProfileInfo'
+import Substrate from '../../substrate/Substrate'
 
 function Chat(props) {
-  const {contactsAddModal, contactsDeleteModal, activateAlertMessage} = props
-  const {userId} = JSON.parse(localStorage.getItem('authInfo'))
+  const {
+    profileOperation,
+    friendsListOperation
+  } = props
 
+  const {
+    contactsAddModal,
+    contactsDeleteModal,
+    profileModal,
+    substrateIsActivated,
+    activateAlertMessage
+  } = props
+
+  const {userId} = JSON.parse(localStorage.getItem('authInfo'))
   const [userInfo, setUserInfo] = useState(null)
 
   const getUserInfo = async () => {
@@ -35,13 +47,14 @@ function Chat(props) {
 
   useEffect(() => {
     getUserInfo()
-  }, [props.friendsListOperation])
+  }, [profileOperation, friendsListOperation])
 
   return (
     <div className="chat">
       {userId && userInfo && (
         <>
-          <ProfileInfo />
+          {substrateIsActivated && <Substrate />}
+          {profileModal && <ProfileInfo user={userInfo.userData} />}
           {contactsAddModal && <ContactsAdd />}
           {contactsDeleteModal && <ContactsDelete />}
           <Header user={userInfo.userData} />
@@ -54,9 +67,12 @@ function Chat(props) {
 
 const mapStateToProps = state => {
   return {
+    profileOperation: state.chatPageState.profileOperation,
     friendsListOperation: state.chatPageState.friendsListOperation,
     contactsAddModal: state.chatPageState.contactsAddModal,
-    contactsDeleteModal: state.chatPageState.contactsDeleteModal
+    contactsDeleteModal: state.chatPageState.contactsDeleteModal,
+    profileModal: state.chatPageState.profileModal,
+    substrateIsActivated: state.chatPageState.substrateIsActivated
   }
 }
 

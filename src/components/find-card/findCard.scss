@@ -12,11 +12,23 @@
 }
 
 .find-card__photo {
+  position: relative;
   width: 40px;
   height: 40px;
   margin-right: .2rem;
   border: 1px solid rgba(105, 108, 117, .6);
   border-radius: 50%;
+  overflow: hidden;
+
+  img {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 35px;
+    height: 35px;
+  }
 }
 
 .find-card__name {

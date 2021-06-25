@@ -1,7 +1,7 @@
 import './appSettingsStyles.scss'
 
 import {connect} from 'react-redux'
-import {toggleMenu} from '../../redux/actions'
+import * as actions from '../../redux/actions'
 
 function AppSettings(props) {
   const {menuIsActivated, toggleUserMenu} = props
@@ -12,7 +12,13 @@ function AppSettings(props) {
     addClasses += ' app-settings__icon-active'
   }
 
-  const handleMenuBtnClick = () => toggleUserMenu(menuIsActivated ? false : true)
+  const handleMenuBtnClick = () => {
+    if (menuIsActivated) {
+      toggleUserMenu(false)
+    } else {
+      toggleUserMenu(true)
+    }
+  }
 
   return (
     <div className="header__app-settings">
@@ -32,7 +38,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    toggleUserMenu: isActivated => dispatch(toggleMenu(isActivated))
+    toggleUserMenu: isActivated => dispatch(actions.toggleMenu(isActivated))
   }
 }
 

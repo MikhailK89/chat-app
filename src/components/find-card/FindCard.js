@@ -1,8 +1,10 @@
 import './findCard.scss'
+import defaultImg from '../../assets/images/default.jpg'
 
 import {useState} from 'react'
 import {connect} from 'react-redux'
 import {updateFriendsList, showAlertMessage} from '../../redux/actions'
+import * as helperFuncs from '../../shared/helperFuncs'
 import dbManager from '../../services/databaseManager'
 import dbMessages from '../../services/messagesTypes'
 import btnManager from '../../services/btnStateManager'
@@ -45,8 +47,9 @@ function FindCard(props) {
       props.updateFriendsList({
         type: 'add',
         status: 'send',
+        action: 'updateFriendsList',
         userId,
-        friendId
+        friendsIds: [friendId]
       })
     } else {
       const dataReceive = await dbManager.deleteFriend({userId, friendId})
@@ -67,8 +70,9 @@ function FindCard(props) {
       props.updateFriendsList({
         type: 'delete',
         status: 'send',
+        action: 'updateFriendsList',
         userId,
-        friendId
+        friendsIds: [friendId]
       })
     }
   }
@@ -76,7 +80,13 @@ function FindCard(props) {
   return (
     <div className="find-card">
       <div className="find-card__info">
-        <div className="find-card__photo"></div>
+        <div className="find-card__photo">
+          <img
+            src={helperFuncs.getImgPath(findFriend.profileImage, defaultImg)}
+            alt={findFriend.userName}
+          />
+        </div>
+
         <div className="find-card__name">{findFriend.userName}</div>
       </div>
 

@@ -1,3 +1,5 @@
+import {profilesImgsPath} from '../settings/fetchSettings'
+
 export const filterByName = (friends, filterText) => {
   filterText = filterText.toLowerCase().trim()
 
@@ -38,4 +40,16 @@ export const filterAndSortMessages = (userMessages, user, selectedFriend) => {
   })
 
   return sortMessages
+}
+
+export const getImgPath = (profileImage, defaultImg) => {
+  let imgPath = profilesImgsPath
+
+  if (profileImage !== '') {
+    imgPath += profileImage
+    imgPath += `?dummy=${Date.now()}`
+    return imgPath
+  } else {
+    return defaultImg
+  }
 }

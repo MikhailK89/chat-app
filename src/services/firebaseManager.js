@@ -173,6 +173,29 @@ class FirebaseManager {
       return {type: 'error', message: 'FIREBASE_NOT_CONNECTED'}
     }
   }
+
+  changeProfileInfo(formData) {
+    const {userId, profileImage} = formData
+
+    try {
+      return this.database.ref('users/' + userId)
+        .transaction(user => {
+          if (user) {
+            return {...user, profileImage}
+          }
+
+          return user
+        })
+        .then(() => {
+          return {type: 'success', message: 'DB_PROFILE_UPDATED'}
+        })
+        .catch(() => {
+          return {type: 'error', message: 'DB_PROFILE_NOT_UPDATED'}
+        })
+    } catch (e) {
+      return {type: 'error', message: 'FIREBASE_NOT_CONNECTED'}
+    }
+  }
 }
 
 export default new FirebaseManager()

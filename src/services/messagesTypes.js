@@ -19,6 +19,8 @@ const DB_CONTACT_ADDED = 'DB_CONTACT_ADDED'
 const DB_CONTACT_NOT_ADDED = 'DB_CONTACT_NOT_ADDED'
 const DB_CONTACT_DELETED = 'DB_CONTACT_DELETED'
 const DB_CONTACT_NOT_DELETED = 'DB_CONTACT_NOT_DELETED'
+const DB_PROFILE_UPDATED = 'DB_PROFILE_UPDATED'
+const DB_PROFILE_NOT_UPDATED = 'DB_PROFILE_NOT_UPDATED'
 const WS_CHAT_NOT_CONNECTED = 'WS_CHAT_NOT_CONNECTED'
 const SERVER_CONTACT_STATUS_SUCCESS = 'SERVER_CONTACT_STATUS_SUCCESS'
 const SERVER_CONTACT_STATUS_ERROR = 'SERVER_CONTACT_STATUS_ERROR'
@@ -47,6 +49,8 @@ const dbMessages = {
   [DB_CONTACT_NOT_ADDED]: 'При добавлении контакта произошла ошибка',
   [DB_CONTACT_DELETED]: 'Контакт успешно удалён',
   [DB_CONTACT_NOT_DELETED]: 'При удалении контакта произошла ошибка',
+  [DB_PROFILE_UPDATED]: 'Профиль успешно обновлён',
+  [DB_PROFILE_NOT_UPDATED]: 'Не удалось обновить данные профиля',
   [WS_CHAT_NOT_CONNECTED]: 'Произошла ошибка подключения к чату. Попробуйте перезагрузить страницу',
   [SERVER_CONTACT_STATUS_SUCCESS]: 'Статус контакта успешно получен',
   [SERVER_CONTACT_STATUS_ERROR]: 'Не удалось получить статус контакта',

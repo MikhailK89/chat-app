@@ -2,8 +2,8 @@ import './mainStyles.scss'
 
 import {useState, useEffect, useRef} from 'react'
 import {connect} from 'react-redux'
-import {selectFriend, updateFriendsList, showAlertMessage} from '../../redux/actions'
-import {filterByName, filterAndSortMessages} from '../../shared/helperFuncs'
+import * as actions from '../../redux/actions'
+import * as helperFuncs from '../../shared/helperFuncs'
 import {wsDomain} from '../../settings/fetchSettings'
 import dbManager from '../../services/databaseManager'
 import dbMessages from '../../services/messagesTypes'
@@ -15,7 +15,12 @@ import Footer from '../footer/Footer'
 
 function Main(props) {
   const {user, friends} = props
-  const {selectedFriend, friendsListOperation, activateAlertMessage} = props
+  const {
+    selectedFriend,
+    profileOperation,
+    friendsListOperation,
+    activateAlertMessage
+  } = props
 
   const messagesCont = useRef(null)
 
@@ -113,6 +118,46 @@ function Main(props) {
     setUserMessages(dataReceive.userMessages)
   }
 
+  const cardClickHandler = friend => {
+    props.selectFriend(friend)
+  }
+
+  const createCards = () => {
+    const filterText = props.filterContactsText
+
+    if (friends.length === 0) {
+      return null
+    }
+
+    return helperFuncs.filterByName(friends, filterText).map(friend => {
+      return <Card
+        key={friend.id}
+        friend={friend}
+        cardClickHandler={() => cardClickHandler(friend)}
+      />
+    })
+  }
+
+  const createMessages = () => {
+    if (friends.length === 0) {
+      return <div className="message__warning">Добавьте новые контакты...</div>
+    }
+
+    if (!selectedFriend) {
+      return <div className="message__warning">Подождите...</div>
+    }
+
+    const selectedMessages = helperFuncs.filterAndSortMessages(userMessages, user, selectedFriend)
+
+    if (selectedMessages.length > 0) {
+      return selectedMessages.map(message => {
+        return <Message key={message.date} message={message} />
+      })
+    } else {
+      return <div className="message__warning">Пока нет сообщений...</div>
+    }
+  }
+
   useEffect(() => {
     resetFriendSelection()
   }, [friendsListOperation, friends, selectedFriend])
@@ -123,16 +168,22 @@ function Main(props) {
   }, [])
 
   useEffect(() => {
-    if (friendsListOperation) {
-      if (friendsListOperation.status === 'send') {
-        const createdMessage = {
-          type: '__UPDATE__',
-          operation: friendsListOperation
-        }
-        sendMessage(createdMessage)
+    if (profileOperation?.status === 'send') {
+      const createdMessage = {
+        type: '__UPDATE__',
+        operation: profileOperation
       }
+      sendMessage(createdMessage)
     }
-  }, [friendsListOperation])
+
+    if (friendsListOperation?.status === 'send') {
+      const createdMessage = {
+        type: '__UPDATE__',
+        operation: friendsListOperation
+      }
+      sendMessage(createdMessage)
+    }
+  }, [profileOperation, friendsListOperation])
 
   useEffect(() => {
     if (receivedMessage?.type === '__INIT__') {
@@ -144,8 +195,16 @@ function Main(props) {
     }
 
     if (receivedMessage?.type === '__UPDATE__') {
-      if (receivedMessage.operation.status === 'get') {
-        props.updateFriendsList(receivedMessage.operation)
+      const {status, action} = receivedMessage.operation
+
+      if (status === 'get') {
+        if (action === 'updateFriendsList') {
+          props.updateFriendsList(receivedMessage.operation)
+        }
+
+        if (action === 'updateProfile') {
+          props.updateProfile(receivedMessage.operation)
+        }
       }
     }
   }, [receivedMessage])
@@ -167,46 +226,6 @@ function Main(props) {
   useEffect(() => {
     scrollDownMessages()
   }, [selectedFriend])
-
-  const cardClickHandler = friend => {
-    props.selectFriend(friend)
-  }
-
-  const createCards = () => {
-    const filterText = props.filterContactsText
-
-    if (friends.length === 0) {
-      return null
-    }
-
-    return filterByName(friends, filterText).map(friend => {
-      return <Card
-        key={friend.id}
-        friend={friend}
-        cardClickHandler={() => cardClickHandler(friend)}
-      />
-    })
-  }
-
-  const createMessages = () => {
-    if (friends.length === 0) {
-      return <div className="message__warning">Добавьте новые контакты...</div>
-    }
-
-    if (!selectedFriend) {
-      return <div className="message__warning">Подождите...</div>
-    }
-
-    const selectedMessages = filterAndSortMessages(userMessages, user, selectedFriend)
-
-    if (selectedMessages.length > 0) {
-      return selectedMessages.map(message => {
-        return <Message key={message.date} message={message} />
-      })
-    } else {
-      return <div className="message__warning">Пока нет сообщений...</div>
-    }
-  }
 
   return (
     <div className="chat__main">
@@ -234,16 +253,18 @@ function Main(props) {
 const mapStateToProps = state => {
   return {
     selectedFriend: state.chatPageState.selectedFriend,
-    filterContactsText: state.chatPageState.filterContactsText,
-    friendsListOperation: state.chatPageState.friendsListOperation
+    profileOperation: state.chatPageState.profileOperation,
+    friendsListOperation: state.chatPageState.friendsListOperation,
+    filterContactsText: state.chatPageState.filterContactsText
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    selectFriend: friend => dispatch(selectFriend(friend)),
-    updateFriendsList: operation => dispatch(updateFriendsList(operation)),
-    activateAlertMessage: messageInfo => dispatch(showAlertMessage(messageInfo))
+    selectFriend: friend => dispatch(actions.selectFriend(friend)),
+    updateProfile: operation => dispatch(actions.updateProfile(operation)),
+    updateFriendsList: operation => dispatch(actions.updateFriendsList(operation)),
+    activateAlertMessage: messageInfo => dispatch(actions.showAlertMessage(messageInfo))
   }
 }
 

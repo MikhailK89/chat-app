@@ -19,18 +19,21 @@ function createHandleClients(clients) {
 
       if (message.type === '__UPDATE__') {
         const {operation} = message
+        const {friendsIds} = operation
 
-        if (clients.hasOwnProperty(operation.friendId)) {
-          clients[operation.friendId].send(JSON.stringify({
-            type: '__UPDATE__',
-            operation: {
-              ...operation,
-              status: 'get',
-              userId: operation.friendId,
-              friendId: operation.userId
-            }
-          }))
-        }
+        Object.keys(clients).forEach(id => {
+          if (friendsIds.includes(id)) {
+            clients[id].send(JSON.stringify({
+              type: '__UPDATE__',
+              operation: {
+                ...operation,
+                status: 'get',
+                userId: id,
+                friendsIds: [operation.userId]
+              }
+            }))
+          }
+        })
       }
     })
 

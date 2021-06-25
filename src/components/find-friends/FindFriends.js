@@ -1,6 +1,6 @@
 import './findFriends.scss'
 
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 import * as actions from '../../redux/actions'
 
@@ -30,6 +30,7 @@ function FindFriends(props) {
     props.openFriendsModal(false)
     props.openContactsAdd(false)
     props.openContactsDelete(false)
+    props.activateSubstrate(false)
     btnManager.clearBtnTypes()
     setFilterText('')
     closeModal()
@@ -92,7 +93,8 @@ const mapDispatchToProps = dispatch => {
   return {
     openFriendsModal: isOpened => dispatch(actions.openFriendsModal(isOpened)),
     openContactsAdd: isOpened => dispatch(actions.openContactsAdd(isOpened)),
-    openContactsDelete: isOpened => dispatch(actions.openContactsDelete(isOpened))
+    openContactsDelete: isOpened => dispatch(actions.openContactsDelete(isOpened)),
+    activateSubstrate: isActivated => dispatch(actions.activateSubstrate(isActivated))
   }
 }
 
