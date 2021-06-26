@@ -11,9 +11,13 @@
   width: 60px;
   height: 60px;
   margin-right: .2rem;
+  background-color: #696c75;
   border-radius: 50%;
-  background-color: #434753;
   overflow: hidden;
+
+  &.transparent {
+    background-color: transparent;
+  }
 
   img {
     display: block;
@@ -21,8 +25,8 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 55px;
-    height: 55px;
+    width: 60px;
+    height: 60px;
   }
 }
 

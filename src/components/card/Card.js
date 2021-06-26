@@ -1,5 +1,5 @@
 import './cardStyles.scss'
-import defaultImg from '../../assets/images/default.jpg'
+import defaultImg from '../../assets/images/default-contacts.png'
 
 import {useState, useEffect} from 'react'
 import * as helperFuncs from '../../shared/helperFuncs'
@@ -9,7 +9,9 @@ function Card(props) {
   const {friend, cardClickHandler} = props
 
   const [onlineStatus, setOnlineStatus] = useState('offline')
+
   const addClasses = onlineStatus === 'online' ? ' online' : ' offline'
+  const addPhotoClasses = friend.profileImage ? ' transparent' : ''
 
   const getOnlineStatus = async () => {
     const res = await dbManager.getOnlineStatus({friendId: friend.id})
@@ -35,11 +37,11 @@ function Card(props) {
 
   return (
     <div className="contacts__card" onClick={cardClickHandler}>
-      <div className="card__photo">
-        <img
+      <div className={"card__photo" + addPhotoClasses}>
+        {friend.profileImage && <img
           src={helperFuncs.getImgPath(friend.profileImage, defaultImg)}
           alt={friend.userName}
-        />
+        />}
       </div>
 
       <div className="card__info">

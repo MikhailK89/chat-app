@@ -1,13 +1,16 @@
 import './menuStyles.scss'
+import defaultImg from '../../assets/images/default-menu.png'
 
 import {connect} from 'react-redux'
 import * as actions from '../../redux/actions'
+import * as helperFuncs from '../../shared/helperFuncs'
 import {domain} from '../../settings/fetchSettings'
 
 function Menu(props) {
   const {user, menuIsActivated} = props
 
   const addClasses = menuIsActivated ? '' : ' hide'
+  const addPhotoClasses = user.profileImage ? ' transparent' : ''
 
   const addContacts = () => {
     props.toggleMenu(false)
@@ -29,27 +32,14 @@ function Menu(props) {
     props.activateSubstrate(true)
   }
 
-  const getImgPath = () => {
-    const {profileImage} = user
-
-    let imgPath = `${domain}/profiles/images/`
-
-    if (profileImage !== '') {
-      imgPath += profileImage
-    } else {
-      imgPath += 'default.jpg'
-    }
-
-    imgPath += `?dummy=${Date.now()}`
-
-    return imgPath
-  }
-
   return (
     <div className={"header__menu" + addClasses}>
       <div className="menu__info">
-        <div className="menu__photo">
-          <img src={getImgPath()} alt={user.userName} />
+        <div className={"menu__photo" + addPhotoClasses}>
+          {user.profileImage && <img
+            src={helperFuncs.getImgPath(user.profileImage, defaultImg)}
+            alt={user.userName}
+          />}
         </div>
 
         <div className="menu__name">{user.userName}</div>

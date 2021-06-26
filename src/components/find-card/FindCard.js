@@ -1,5 +1,5 @@
 import './findCard.scss'
-import defaultImg from '../../assets/images/default.jpg'
+import defaultImg from '../../assets/images/default-find-card.png'
 
 import {useState} from 'react'
 import {connect} from 'react-redux'
@@ -26,6 +26,7 @@ function FindCard(props) {
   }
 
   const addClasses = btnState === 'add' ? ' find-card__add' : ' find-card__delete'
+  const addPhotoClasses = findFriend.profileImage ? ' transparent' : ''
 
   const btnHandler = async () => {
     if (btnState === 'add') {
@@ -51,7 +52,9 @@ function FindCard(props) {
         userId,
         friendsIds: [friendId]
       })
-    } else {
+    }
+    
+    if (btnState === 'delete') {
       const dataReceive = await dbManager.deleteFriend({userId, friendId})
 
       if (dataReceive.type === 'error') {
@@ -80,11 +83,11 @@ function FindCard(props) {
   return (
     <div className="find-card">
       <div className="find-card__info">
-        <div className="find-card__photo">
-          <img
+        <div className={"find-card__photo" + addPhotoClasses}>
+          {findFriend.profileImage && <img
             src={helperFuncs.getImgPath(findFriend.profileImage, defaultImg)}
             alt={findFriend.userName}
-          />
+          />}
         </div>
 
         <div className="find-card__name">{findFriend.userName}</div>

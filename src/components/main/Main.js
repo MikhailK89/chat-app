@@ -24,8 +24,9 @@ function Main(props) {
 
   const messagesCont = useRef(null)
 
-  const [userMessages, setUserMessages] = useState(null)
   const [webSocket, setWebSocket] = useState(null)
+  const [userMessages, setUserMessages] = useState(null)
+  const [passedMessage, setPassedMessage] = useState(null)
   const [receivedMessage, setReceivedMessage] = useState(null)
 
   const scrollDownMessages = () => {
@@ -35,26 +36,23 @@ function Main(props) {
 
   const resetFriendSelection = () => {
     if (friends.length > 0 && !selectedFriend) {
-      props.selectFriend(friends[0])
-      return
+      return props.selectFriend(friends[0])
     }
 
     if (friends.length === 0 && selectedFriend) {
-      props.selectFriend(null)
-      return
+      return props.selectFriend(null)
     }
 
-    if (friendsListOperation?.friendId === selectedFriend?.id) {
-      if (friendsListOperation?.type === 'delete') {
+    if (!friends.includes(selectedFriend)) {
+      return friends.length > 0 ?
+        props.selectFriend(friends[0]) :
         props.selectFriend(null)
-        return
-      }
     }
   }
 
   const sendMessage = async (message) => {
     if (webSocket) {
-      if (message.type === '__INIT__') {
+      if (message.type === '__INIT__' || message.type === '__UPDATE__') {
         webSocket.send(JSON.stringify(message))
       }
 
@@ -75,9 +73,7 @@ function Main(props) {
         webSocket.send(JSON.stringify(message))
       }
 
-      if (message.type === '__UPDATE__') {
-        webSocket.send(JSON.stringify(message))
-      }
+      setPassedMessage(message)
     }
   }
 
@@ -159,31 +155,31 @@ function Main(props) {
   }
 
   useEffect(() => {
-    resetFriendSelection()
-  }, [friendsListOperation, friends, selectedFriend])
-
-  useEffect(() => {
     createWsConnection()
     return () => webSocket ? webSocket.close() : null
   }, [])
 
   useEffect(() => {
-    if (profileOperation?.status === 'send') {
-      const createdMessage = {
-        type: '__UPDATE__',
-        operation: profileOperation
-      }
-      sendMessage(createdMessage)
-    }
+    resetFriendSelection()
+  }, [friends])
 
+  useEffect(() => {
     if (friendsListOperation?.status === 'send') {
-      const createdMessage = {
+      sendMessage({
         type: '__UPDATE__',
         operation: friendsListOperation
-      }
-      sendMessage(createdMessage)
+      })
     }
-  }, [profileOperation, friendsListOperation])
+  }, [friendsListOperation])
+
+  useEffect(() => {
+    if (profileOperation?.status === 'send') {
+      sendMessage({
+        type: '__UPDATE__',
+        operation: profileOperation
+      })
+    }
+  }, [profileOperation])
 
   useEffect(() => {
     if (receivedMessage?.type === '__INIT__') {
@@ -210,12 +206,18 @@ function Main(props) {
   }, [receivedMessage])
 
   useEffect(() => {
-    if (receivedMessage?.type === '__INIT__') {
+    if (!passedMessage) {
+      return
+    }
+
+    const messageType = passedMessage.type
+
+    if (messageType === '__INIT__') {
       scrollDownMessages()
     }
 
-    if (receivedMessage?.type === '__COMMON__') {
-      const {from, to} = receivedMessage
+    if (messageType === '__COMMON__') {
+      const {from, to} = passedMessage
 
       if (user.id === from && selectedFriend.id === to) {
         scrollDownMessages()
