@@ -29,55 +29,41 @@ function FindCard(props) {
   const addPhotoClasses = findFriend.profileImage ? ' transparent' : ''
 
   const btnHandler = async () => {
+    let dbManagerFunc = null
+    let newBtnState = null
+
     if (btnState === 'add') {
-      const dataReceive = await dbManager.addFriend({userId, friendId})
-
-      if (dataReceive.type === 'error') {
-        activateAlertMessage({
-          type: dataReceive.type,
-          text: dbMessages[dataReceive.message],
-          duration: 4000
-        })
-
-        return
-      }
-
-      btnManager.saveBtnType(friendId, 'delete')
-      setBtnState('delete')
-
-      props.updateFriendsList({
-        type: 'add',
-        status: 'send',
-        action: 'updateFriendsList',
-        userId,
-        friendsIds: [friendId]
-      })
+      dbManagerFunc = dbManager.addFriend
+      newBtnState = 'delete'
     }
-    
+
     if (btnState === 'delete') {
-      const dataReceive = await dbManager.deleteFriend({userId, friendId})
-
-      if (dataReceive.type === 'error') {
-        activateAlertMessage({
-          type: dataReceive.type,
-          text: dbMessages[dataReceive.message],
-          duration: 4000
-        })
-
-        return
-      }
-
-      btnManager.saveBtnType(friendId, 'add')
-      setBtnState('add')
-
-      props.updateFriendsList({
-        type: 'delete',
-        status: 'send',
-        action: 'updateFriendsList',
-        userId,
-        friendsIds: [friendId]
-      })
+      dbManagerFunc = dbManager.deleteFriend
+      newBtnState = 'add'
     }
+
+    const dataReceive = await dbManagerFunc({userId, friendId})
+
+    if (dataReceive.type === 'error') {
+      activateAlertMessage({
+        type: dataReceive.type,
+        text: dbMessages[dataReceive.message],
+        duration: 4000
+      })
+
+      return
+    }
+
+    props.updateFriendsList({
+      type: btnState,
+      status: 'send',
+      action: 'updateFriendsList',
+      userId,
+      friendsIds: [friendId]
+    })
+
+    btnManager.saveBtnType(friendId, newBtnState)
+    setBtnState(newBtnState)
   }
 
   return (

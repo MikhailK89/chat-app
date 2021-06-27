@@ -7,6 +7,15 @@ export const filterByName = (friends, filterText) => {
     return friends
   }
 
+  const filterByFullName = friends.filter(friend => {
+    const friendName = friend.userName.toLowerCase()
+    return friendName.startsWith(filterText)
+  })
+
+  if (filterByFullName.length > 0) {
+    return filterByFullName
+  }
+
   return friends.filter(friend => {
     const friendName = friend.userName.toLowerCase()
 

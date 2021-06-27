@@ -1,0 +1,86 @@
+{
+  "messages" : {
+    "DBA0CMaTUmXcOIMfUe6z99i0G0M2" : {
+      "-MdBb-4WbIR-D8sCqcBA" : {
+        "date" : "1624782807732",
+        "from" : "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1",
+        "text" : "Привет, Эрик! Как твои дела?",
+        "to" : "DBA0CMaTUmXcOIMfUe6z99i0G0M2",
+        "type" : "__COMMON__"
+      },
+      "-MdBbJX7T7k6u_F0VERd" : {
+        "date" : "1624782891661",
+        "from" : "DBA0CMaTUmXcOIMfUe6z99i0G0M2",
+        "text" : "Привет, Рэнди! У меня всё хорошо!",
+        "to" : "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1",
+        "type" : "__COMMON__"
+      }
+    },
+    "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1" : {
+      "-MdBb-1o2PBQ4Z1GWtuG" : {
+        "date" : "1624782807732",
+        "from" : "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1",
+        "text" : "Привет, Эрик! Как твои дела?",
+        "to" : "DBA0CMaTUmXcOIMfUe6z99i0G0M2",
+        "type" : "__COMMON__"
+      },
+      "-MdBbJY2mH-sBE4u2UYv" : {
+        "date" : "1624782891661",
+        "from" : "DBA0CMaTUmXcOIMfUe6z99i0G0M2",
+        "text" : "Привет, Рэнди! У меня всё хорошо!",
+        "to" : "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1",
+        "type" : "__COMMON__"
+      }
+    }
+  },
+  "users" : {
+    "DBA0CMaTUmXcOIMfUe6z99i0G0M2" : {
+      "email" : "eric_cartman@gmail.com",
+      "friendsIds" : [ "", "T9hVAs391ffCjfEKrNO8MtTHmzG2", "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1" ],
+      "id" : "DBA0CMaTUmXcOIMfUe6z99i0G0M2",
+      "password" : "123456789",
+      "profileImage" : "DBA0CMaTUmXcOIMfUe6z99i0G0M2.png",
+      "userName" : "Эрик Картман"
+    },
+    "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1" : {
+      "email" : "randy_marsh@gmail.com",
+      "friendsIds" : [ "", "T9hVAs391ffCjfEKrNO8MtTHmzG2", "bNPK0T0Vw9TIy1adtF1oYuUlETq1", "DBA0CMaTUmXcOIMfUe6z99i0G0M2", "eHDv6YXQwePU9avoJq1xcGD0Qrp2", "yGjozL2OGOXU7SQoKw1Bxf7cLil1" ],
+      "id" : "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1",
+      "password" : "123456789",
+      "profileImage" : "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1.png",
+      "userName" : "Рэнди Марш"
+    },
+    "T9hVAs391ffCjfEKrNO8MtTHmzG2" : {
+      "email" : "stan_marsh@gmail.com",
+      "friendsIds" : [ "", "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1", "DBA0CMaTUmXcOIMfUe6z99i0G0M2" ],
+      "id" : "T9hVAs391ffCjfEKrNO8MtTHmzG2",
+      "password" : "123456789",
+      "profileImage" : "T9hVAs391ffCjfEKrNO8MtTHmzG2.png",
+      "userName" : "Стэн Марш"
+    },
+    "bNPK0T0Vw9TIy1adtF1oYuUlETq1" : {
+      "email" : "leopold_stotch@gmail.com",
+      "friendsIds" : [ "", "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1" ],
+      "id" : "bNPK0T0Vw9TIy1adtF1oYuUlETq1",
+      "password" : "123456789",
+      "profileImage" : "bNPK0T0Vw9TIy1adtF1oYuUlETq1.png",
+      "userName" : "Леопольд Стотч"
+    },
+    "eHDv6YXQwePU9avoJq1xcGD0Qrp2" : {
+      "email" : "kyle_broflovski@gmail.com",
+      "friendsIds" : [ "", "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1" ],
+      "id" : "eHDv6YXQwePU9avoJq1xcGD0Qrp2",
+      "password" : "123456789",
+      "profileImage" : "eHDv6YXQwePU9avoJq1xcGD0Qrp2.png",
+      "userName" : "Кайл Брофловски"
+    },
+    "yGjozL2OGOXU7SQoKw1Bxf7cLil1" : {
+      "email" : "kenny_mccormick@gmail.com",
+      "friendsIds" : [ "", "Ra9EfkgZrgcDlLgWZgo0R9TLoNq1" ],
+      "id" : "yGjozL2OGOXU7SQoKw1Bxf7cLil1",
+      "password" : "123456789",
+      "profileImage" : "yGjozL2OGOXU7SQoKw1Bxf7cLil1.png",
+      "userName" : "Кенни Маккормик"
+    }
+  }
+}

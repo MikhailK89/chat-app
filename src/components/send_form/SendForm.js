@@ -68,8 +68,8 @@ function SendForm(props) {
             {...register('password', {
               required: 'Поле не должно быть пустым',
               minLength: {
-                value: 5,
-                message: 'Пароль должен быть не менее 5 символов'
+                value: 7,
+                message: 'Пароль должен быть не менее 7 символов'
               }
             })}
             placeholder="Введите пароль"

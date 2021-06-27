@@ -1,7 +1,13 @@
 import fbManager from './firebaseManager'
+import * as helperFuncs from '../shared/helperFuncs'
 import {domain} from '../settings/fetchSettings'
 
 class DatabaseManager {
+  constructor() {
+    this.addFriend = this.addFriend.bind(this)
+    this.deleteFriend = this.deleteFriend.bind(this)
+  }
+
   async authUser(formData) {
     const {email, password} = formData
 
@@ -138,19 +144,16 @@ class DatabaseManager {
     const {usersData} = fbGetUsersRes
 
     if (usersData) {
-      const filteredUsersData = Object.keys(usersData)
+      const filteredUsers = Object.keys(usersData)
         .map(id => usersData[id])
         .filter(user => {
-          const regexp = /(\S+)\s+(\S+)/
-          const userNameArr = user.userName.toLowerCase().match(regexp)
-
-          const filterCond = user.id !== userId && !friendsIds.includes(user.id) &&
-            (userNameArr[1].startsWith(filterText) || userNameArr[2].startsWith(filterText))
-
-          return filterCond
+          return user.id !== userId && !friendsIds.includes(user.id)
         })
 
-      return {...fbGetUsersRes, usersData: filteredUsersData}
+      return {
+        ...fbGetUsersRes,
+        usersData: helperFuncs.filterByName(filteredUsers, filterText)
+      }
     } else {
       return {...fbGetUsersRes, usersData: []}
     }
